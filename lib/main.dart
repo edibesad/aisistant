@@ -1,4 +1,5 @@
 import 'package:aisistant/core/constants/app_constants.dart';
+import 'package:aisistant/core/init/app_localization.dart';
 import 'package:aisistant/core/init/navigation/app_navigation.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,7 @@ import 'core/init/app_init.dart';
 Future<void> main() async {
   await AppInit().init();
 
-  runApp(const MainApp());
+  runApp(AppLocalization(child: const MainApp()));
 }
 
 class MainApp extends StatelessWidget {

@@ -48,6 +48,7 @@ app.*.map.json
 /linux
 /macos
 
+/lib/core/constants/hidden_constants.dart
 
 # Google API key and other resources
 GoogleService-Info.plist

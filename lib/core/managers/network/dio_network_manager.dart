@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../abstracts/network_service.dart';
@@ -8,19 +9,17 @@ import '../../models/response_model.dart';
 
 class DioManager extends NetworkService {
   static Dio? _dio;
-  static const String _baseUrl = 'http://10.0.2.2:8080/';
 
   static Dio get dio {
     _dio ??= Dio(
       BaseOptions(
-        baseUrl: _baseUrl,
         headers: {
-          "api-key":
-              "fa56314937726b28e53c57988c05adefe71b507202302c37f5e14836e9a0ed0c"
+          "Accept": "application/json",
+          "Content-Type": "application/json",
         },
         contentType: Headers.jsonContentType,
-        connectTimeout: const Duration(milliseconds: 5000),
-        receiveTimeout: const Duration(milliseconds: 3000),
+        connectTimeout: const Duration(seconds: 200),
+        receiveTimeout: const Duration(seconds: 200),
       ),
     )..interceptors.add(InterceptorsWrapper(
         onRequest: (options, handler) async {
@@ -38,11 +37,17 @@ class DioManager extends NetworkService {
       {Map<String, dynamic>? params}) async {
     try {
       final response = await dio.delete(path, queryParameters: params);
-      return ResponseModel.fromJson(response.data);
+      return ResponseModel(
+          result: true, data: response.data, message: "success".tr());
     } on DioException catch (e) {
       return ResponseModel(
         result: false,
         message: e.response.toString(),
+      );
+    } catch (e) {
+      return ResponseModel(
+        result: false,
+        message: e.toString(),
       );
     }
   }
@@ -52,7 +57,21 @@ class DioManager extends NetworkService {
       {Map<String, dynamic>? params}) async {
     try {
       final response = await dio.get(path, queryParameters: params);
-      return ResponseModel.fromJson(response.data);
+
+      return ResponseModel(
+          result: true, data: response.data, message: "success".tr());
+    } on DioException catch (e) {
+      if (kDebugMode) {
+        log(e.response.toString());
+        log(e.response!.realUri.toString());
+      }
+      if (e.response != null) {
+        return ResponseModel.fromJson(e.response!.data);
+      }
+      return ResponseModel(
+        result: false,
+        message: e.toString(),
+      );
     } catch (e) {
       return ResponseModel(
         result: false,
@@ -67,10 +86,15 @@ class DioManager extends NetworkService {
     try {
       final response =
           await dio.post(path, queryParameters: params, data: data);
-      return ResponseModel.fromJson(response.data);
+      if (kDebugMode) {
+        log(response.data.toString());
+      }
+      return ResponseModel(
+          result: true, data: response.data, message: "success".tr());
     } on DioException catch (e) {
       if (kDebugMode) {
         log(e.response.toString());
+        log(e.response!.realUri.toString());
       }
       if (e.response != null) {
         return ResponseModel.fromJson(e.response!.data);
@@ -93,7 +117,8 @@ class DioManager extends NetworkService {
     try {
       final response =
           await dio.post(path, queryParameters: params, data: data);
-      return ResponseModel.fromJson(response.data);
+      return ResponseModel(
+          result: true, data: response.data, message: "success".tr());
     } catch (e) {
       return ResponseModel(
         result: false,
