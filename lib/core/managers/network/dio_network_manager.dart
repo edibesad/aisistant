@@ -1,13 +1,13 @@
 import 'dart:developer';
 
+import 'package:aisistant/core/repository/network_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../abstracts/network_service.dart';
-import '../../models/response_model.dart';
+import '../../app/models/response_model.dart';
 
-class DioManager extends NetworkService {
+class DioManager extends NetworkRepository {
   static Dio? _dio;
 
   static Dio get dio {
@@ -18,7 +18,7 @@ class DioManager extends NetworkService {
           "Content-Type": "application/json",
         },
         contentType: Headers.jsonContentType,
-        connectTimeout: const Duration(seconds: 200),
+        connectTimeout: const Duration(milliseconds: 200),
         receiveTimeout: const Duration(seconds: 200),
       ),
     )..interceptors.add(InterceptorsWrapper(

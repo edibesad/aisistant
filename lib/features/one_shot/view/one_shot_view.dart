@@ -28,6 +28,11 @@ class _OneShotViewState extends BaseState<OneShotView> with OneShotViewMixin {
         child: Scaffold(
             appBar: AppBar(
               title: const Text('one_shot').tr(),
+              actions: [
+                IconButton(
+                    onPressed: viewModel.onSettingsPressed,
+                    icon: const Icon(Icons.settings))
+              ],
             ),
             body: BlocListener<OneShotViewModel, OneShotState>(
                 listener: (context, state) {},

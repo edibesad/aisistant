@@ -19,6 +19,7 @@ dependencies:
   equatable: ^2.0.5
   markdown_widget: ^2.3.2+3
   google_fonts: ^6.1.0
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:

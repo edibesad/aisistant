@@ -1,10 +1,12 @@
 import 'package:aisistant/core/base/base_cubit.dart';
-import 'package:aisistant/core/models/gemini_response_model.dart';
-import 'package:aisistant/core/models/response_model.dart';
+
 import 'package:aisistant/features/one_shot/view_model/state/one_shot_state.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/app/models/gemini_response_model.dart';
+import '../../../core/app/models/response_model.dart';
 import '../../../core/constants/hidden_constants.dart';
+import '../../../core/init/navigation/app_navigation.dart';
 
 class OneShotViewModel extends BaseCubit<OneShotState> {
   OneShotViewModel() : super(const OneShotState());
@@ -24,7 +26,7 @@ class OneShotViewModel extends BaseCubit<OneShotState> {
 
     emit(state.copyWith(isLoading: true));
     lastPromptSubmitted = DateTime.now();
-    final response = await networkService.postRequest(
+    final response = await networkRepository.postRequest(
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
       params: {
         'key': HiddenConstants.API_KEY,
@@ -77,5 +79,9 @@ class OneShotViewModel extends BaseCubit<OneShotState> {
     }
     FocusManager.instance.primaryFocus?.unfocus();
     getPrompt();
+  }
+
+  void onSettingsPressed() {
+    appRouter.push(const SettingsRoute());
   }
 }
