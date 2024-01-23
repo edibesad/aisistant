@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'app_theme.dart';
 
 class DarkAppTheme implements AppTheme {
-  final _darkColorScheme = const ColorScheme(
+  final ColorScheme _darkColorScheme = const ColorScheme(
     brightness: Brightness.dark,
     primary: Color(0xFF52D7F0),
     onPrimary: Color(0xFF00363F),

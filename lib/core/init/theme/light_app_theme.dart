@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'app_theme.dart';
 
 class LightAppTheme implements AppTheme {
-  final _lightColorScheme = const ColorScheme(
+  final ColorScheme _lightColorScheme = const ColorScheme(
     brightness: Brightness.light,
     primary: Color(0xFF006877),
     onPrimary: Color(0xFFFFFFFF),

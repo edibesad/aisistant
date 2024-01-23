@@ -7,14 +7,18 @@ import '../constants/enums/locales.dart';
 final class AppLocalization extends EasyLocalization {
   AppLocalization({super.key, required super.child})
       : super(
-            supportedLocales: locales,
-            path: translationsPath,
-            useOnlyLangCode: true);
+          supportedLocales: locales,
+          path: translationsPath,
+          useOnlyLangCode: true,
+        );
 
-  static final locales = Locales.values.map((e) => e.locale).toList();
-  static const translationsPath = 'assets/translations';
+  static final List<Locale> locales =
+      Locales.values.map((Locales e) => e.locale).toList();
+  static const String translationsPath = 'assets/translations';
 
-  static Future<void> updateLanguage(
-          {required BuildContext context, required Locales value}) =>
+  static Future<void> updateLanguage({
+    required BuildContext context,
+    required Locales value,
+  }) =>
       context.setLocale(value.locale);
 }

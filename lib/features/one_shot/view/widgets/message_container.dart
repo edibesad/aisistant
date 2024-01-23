@@ -1,6 +1,7 @@
-import 'package:aisistant/core/extension/context_extension.dart';
-import 'package:aisistant/features/one_shot/view/widgets/bloc_selectors/message_bloc_selector.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../core/extension/context_extension.dart';
+import 'bloc_selectors/message_bloc_selector.dart';
 
 class MessageContainer extends StatelessWidget {
   const MessageContainer({super.key});
@@ -9,6 +10,7 @@ class MessageContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
+        width: context.width,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey),
           borderRadius: const BorderRadius.all(Radius.circular(8)),

@@ -8,8 +8,8 @@ class SubmitButtonBlocSelector
     extends BlocSelector<OneShotViewModel, OneShotState, bool> {
   SubmitButtonBlocSelector({super.key})
       : super(
-          selector: (state) => state.isLoading,
-          builder: (context, state) {
+          selector: (OneShotState state) => state.isLoading,
+          builder: (BuildContext context, bool state) {
             return state
                 ? const CircularProgressIndicator()
                 : IconButton.filled(

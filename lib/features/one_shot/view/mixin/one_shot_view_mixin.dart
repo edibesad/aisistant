@@ -1,5 +1,5 @@
-import 'package:aisistant/core/base/base_state.dart';
-import 'package:aisistant/features/one_shot/view_model/one_shot_view_model.dart';
+import '../../../../core/base/base_state.dart';
+import '../../view_model/one_shot_view_model.dart';
 
 import '../one_shot_view.dart';
 

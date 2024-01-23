@@ -7,21 +7,22 @@ part 'app_cache.g.dart';
 
 @JsonSerializable()
 final class AppCache {
-  final CacheSettings? settings;
-
   const AppCache({this.settings});
 
   factory AppCache.fromJson(Map<String, dynamic> json) =>
       _$AppCacheFromJson(json);
+  final CacheSettings? settings;
 }
 
 @JsonSerializable()
 class CacheSettings {
-  ThemeMode? themeMode;
-  Locales? locale;
-
   CacheSettings({this.themeMode, this.locale});
 
   factory CacheSettings.fromJson(Map<String, dynamic> json) =>
       _$CacheSettingsFromJson(json);
+
+  ThemeMode? themeMode;
+  final Locales? locale;
+
+  Map<String, dynamic> toJson() => _$CacheSettingsToJson(this);
 }

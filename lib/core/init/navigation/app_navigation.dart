@@ -6,12 +6,12 @@ import '../../../features/settings/view/widgets/language_selection_view.dart';
 
 part 'app_navigation.gr.dart';
 
-@AutoRouterConfig(replaceInRouteName: "View,Route")
+@AutoRouterConfig(replaceInRouteName: 'View,Route')
 class AppRouter extends _$AppRouter {
   @override
-  List<AutoRoute> get routes => [
+  List<AutoRoute> get routes => <AutoRoute>[
         AutoRoute(page: OneShotRoute.page, initial: true),
         AutoRoute(page: SettingsRoute.page),
-        AutoRoute(page: LanguageSelectionRoute.page)
+        AutoRoute(page: LanguageSelectionRoute.page),
       ];
 }

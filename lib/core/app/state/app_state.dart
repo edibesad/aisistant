@@ -8,7 +8,7 @@ class AppState extends Equatable {
   final ThemeMode themeMode;
 
   @override
-  List<Object?> get props => [themeMode];
+  List<Object?> get props => <Object?>[themeMode];
 
   AppState copyWith({
     ThemeMode? themeMode,

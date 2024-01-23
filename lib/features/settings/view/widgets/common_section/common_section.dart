@@ -1,9 +1,9 @@
-import 'package:aisistant/features/settings/view/widgets/common_section/tiles/language_tile.dart';
-import 'package:aisistant/features/settings/view/widgets/common_section/tiles/theme_tile.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../settings_section.dart';
+import 'tiles/language_tile.dart';
+import 'tiles/theme_tile.dart';
 
 class CommonSection extends StatelessWidget {
   const CommonSection({super.key});
@@ -12,7 +12,7 @@ class CommonSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return SettingsSection(
       title: 'common'.tr(),
-      content: [LanguageTile(), ThemeTile()],
+      content: <Widget>[LanguageTile(), ThemeTile()],
     );
   }
 }

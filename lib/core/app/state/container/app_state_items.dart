@@ -1,10 +1,9 @@
-import 'package:aisistant/core/app/models/app_cache.dart';
-import 'package:aisistant/core/app/state/container/index.dart';
-import 'package:aisistant/core/repository/network_repository.dart';
-
 import '../../../init/navigation/app_navigation.dart';
 import '../../../repository/cache_repository.dart';
+import '../../../repository/network_repository.dart';
+import '../../models/app_cache.dart';
 import '../../view_model/app_view_model.dart';
+import 'index.dart';
 
 class AppStateItems {
   const AppStateItems._();

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,17 +12,24 @@ class MessageBlocSelector
     extends BlocSelector<OneShotViewModel, OneShotState, String> {
   MessageBlocSelector({super.key})
       : super(
-          selector: (state) => state.message,
-          builder: (context, state) {
+          selector: (OneShotState state) => state.message,
+          builder: (BuildContext context, String state) {
+            final bool isDark = Theme.of(context).brightness == Brightness.dark;
             return SelectionArea(
               child: MarkdownBlock(
-                config: MarkdownConfig(configs: [
-                  PreConfig(
-                    textStyle: GoogleFonts.cutiveMono(fontSize: 16),
-                  )
-                ]),
-                selectable: true,
-                data: state,
+                config: MarkdownConfig(
+                  configs: <WidgetConfig>[
+                    if (isDark)
+                      PreConfig.darkConfig.copy(
+                        textStyle: GoogleFonts.cutiveMono(fontSize: 16),
+                      )
+                    else
+                      const PreConfig().copy(
+                        textStyle: GoogleFonts.cutiveMono(fontSize: 16),
+                      ),
+                  ],
+                ),
+                data: state.tr(),
               ),
             );
           },

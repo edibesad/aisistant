@@ -1,14 +1,15 @@
-import 'dart:developer';
+// ignore_for_file: always_specify_types
 
-import 'package:aisistant/core/app/state/app_state.dart';
-import 'package:aisistant/core/app/state/container/app_state_items.dart';
-import 'package:aisistant/core/app/view_model/app_view_model.dart';
-import 'package:aisistant/core/constants/app_constants.dart';
-import 'package:aisistant/core/init/app_localization.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'core/app/state/app_state.dart';
+import 'core/app/state/container/app_state_items.dart';
+import 'core/app/view_model/app_view_model.dart';
+import 'core/constants/app_constants.dart';
 import 'core/init/app_init.dart';
+import 'core/init/app_localization.dart';
 
 Future<void> main() async {
   await AppInit().init();
