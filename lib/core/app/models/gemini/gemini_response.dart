@@ -13,26 +13,31 @@ class GeminiResponse {
   });
   factory GeminiResponse.fromJson(Map<String, dynamic> json) =>
       _$GeminiResponseFromJson(json);
+
   final List<Candidate>? candidates;
   final PromptFeedback? promptFeedback;
+
   Map<String, dynamic> toJson() => _$GeminiResponseToJson(this);
 }
 
 @JsonSerializable()
 class Candidate {
-  Candidate({
-    this.content,
-    this.safetyRatings,
-    this.citationMetadata,
-    this.finishReason,
-  });
+  Candidate(
+      {this.content,
+      this.safetyRatings,
+      this.citationMetadata,
+      this.finishReason,
+      this.tokenCount});
 
   factory Candidate.fromJson(Map<String, dynamic> json) =>
       _$CandidateFromJson(json);
   final Content? content;
+
   final List<SafetyRating>? safetyRatings;
   final CitationMetadata? citationMetadata;
   final FinishReason? finishReason;
+  final int? tokenCount;
+
   Map<String, dynamic> toJson() => _$CandidateToJson(this);
 }
 
