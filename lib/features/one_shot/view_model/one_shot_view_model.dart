@@ -124,6 +124,26 @@ class OneShotViewModel extends BaseCubit<OneShotState> {
         log(geminiResponse.toJson().toString());
 
         if (geminiResponse.candidates != null &&
+            geminiResponse.candidates!.isNotEmpty) {
+          if (geminiResponse.candidates![0].finishReason ==
+              FinishReason.FINISH_REASON_MAX_TOKENS) {
+            message = 'busy_message'.tr();
+          } else if (geminiResponse.candidates![0].finishReason ==
+              FinishReason.FINISH_REASON_SAFETY) {
+            message = 'safety_message'.tr();
+          } else if (geminiResponse.candidates![0].finishReason ==
+              FinishReason.FINISH_REASON_UNSPECIFIED) {
+            message = 'unspecified_message'.tr();
+          } else if (geminiResponse.candidates![0].finishReason ==
+              FinishReason.FINISH_REASON_RECITATION) {
+            message = 'recitation_message'.tr();
+          } else if (geminiResponse.candidates![0].finishReason ==
+              FinishReason.FINISH_REASON_OTHER) {
+            message = 'other_message'.tr();
+          }
+        }
+
+        if (geminiResponse.candidates != null &&
             geminiResponse.candidates!.isNotEmpty &&
             geminiResponse.candidates![0].content != null &&
             geminiResponse.candidates![0].content!.parts != null &&
