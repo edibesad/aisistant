@@ -10,8 +10,8 @@ class LanguageTile
     extends BlocSelector<SettingsViewModel, SettingsState, String> {
   LanguageTile({super.key})
       : super(
-          selector: (SettingsState state) => state.language,
-          builder: (BuildContext context, String state) => SettingsTile(
+          selector: (state) => state.language,
+          builder: (context, state) => SettingsTile(
             subtitle: Text(state),
             title: const Text('language').tr(),
             trailing: const Icon(Icons.arrow_right),

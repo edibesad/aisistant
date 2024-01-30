@@ -20,15 +20,14 @@ class DioManager extends NetworkRepository {
         contentType: Headers.jsonContentType,
         connectTimeout: const Duration(seconds: 200),
         receiveTimeout: const Duration(seconds: 200),
-        validateStatus: (int? status) => status! < 500,
+        validateStatus: (status) => status! < 500,
       ),
     )..interceptors.add(
         InterceptorsWrapper(
-          onRequest: (RequestOptions options,
-              RequestInterceptorHandler handler) async {
+          onRequest: (options, handler) async {
             return handler.next(options);
           },
-          onError: (DioException err, ErrorInterceptorHandler handler) async {
+          onError: (err, handler) async {
             return handler.next(err);
           },
         ),

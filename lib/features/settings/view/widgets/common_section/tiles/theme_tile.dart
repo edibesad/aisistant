@@ -9,8 +9,8 @@ import '../../settings_tile.dart';
 class ThemeTile extends BlocSelector<SettingsViewModel, SettingsState, String> {
   ThemeTile({super.key})
       : super(
-          selector: (SettingsState state) => state.themeMode,
-          builder: (BuildContext context, String state) => SettingsTile(
+          selector: (state) => state.themeMode,
+          builder: (context, state) => SettingsTile(
             title: const Text('theme').tr(),
             trailing: DropdownButton<String>(
               value: state,
@@ -28,7 +28,7 @@ class ThemeTile extends BlocSelector<SettingsViewModel, SettingsState, String> {
                   child: const Text('dark').tr(),
                 ),
               ],
-              onChanged: (String? value) {
+              onChanged: (value) {
                 context.read<SettingsViewModel>().onThemeModeChanged(value!);
               },
             ),

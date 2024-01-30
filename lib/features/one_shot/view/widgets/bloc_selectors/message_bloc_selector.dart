@@ -12,8 +12,8 @@ class MessageBlocSelector
     extends BlocSelector<OneShotViewModel, OneShotState, String> {
   MessageBlocSelector({super.key})
       : super(
-          selector: (OneShotState state) => state.message,
-          builder: (BuildContext context, String state) {
+          selector: (state) => state.message,
+          builder: (context, state) {
             final bool isDark = Theme.of(context).brightness == Brightness.dark;
             return SelectionArea(
               child: MarkdownBlock(

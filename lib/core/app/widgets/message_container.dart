@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/extension/context_extension.dart';
-import 'bloc_selectors/message_bloc_selector.dart';
+import '../../extension/context_extension.dart';
 
 class MessageContainer extends StatelessWidget {
-  const MessageContainer({super.key});
+  const MessageContainer({super.key, this.child});
+
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class MessageContainer extends StatelessWidget {
         ),
         child: Padding(
           padding: context.paddingLow,
-          child: MessageBlocSelector(),
+          child: child,
         ),
       ),
     );

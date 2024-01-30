@@ -86,7 +86,7 @@ Content _$ContentFromJson(Map<String, dynamic> json) => Content(
       parts: (json['parts'] as List<dynamic>?)
           ?.map((e) => Part.fromJson(e as Map<String, dynamic>))
           .toList(),
-      role: json['role'] as String?,
+      role: $enumDecodeNullable(_$RoleEnumMap, json['role']),
     );
 
 // ignore: unused_element
@@ -95,13 +95,18 @@ abstract class _$ContentPerFieldToJson {
   static Object? parts(List<Part>? instance) =>
       instance?.map((e) => e.toJson()).toList();
   // ignore: unused_element
-  static Object? role(String? instance) => instance;
+  static Object? role(Role? instance) => _$RoleEnumMap[instance];
 }
 
 Map<String, dynamic> _$ContentToJson(Content instance) => <String, dynamic>{
       'parts': instance.parts?.map((e) => e.toJson()).toList(),
-      'role': instance.role,
+      'role': _$RoleEnumMap[instance.role],
     };
+
+const _$RoleEnumMap = {
+  Role.USER: 'user',
+  Role.MODEL: 'model',
+};
 
 InlineData _$InlineDataFromJson(Map<String, dynamic> json) => InlineData(
       mimeType: json['mimeType'] as String?,

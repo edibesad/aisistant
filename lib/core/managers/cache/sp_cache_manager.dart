@@ -4,11 +4,11 @@ import '../../repository/cache_repository.dart';
 
 class SPCacheManager extends CacheRepository {
   factory SPCacheManager() {
-    _instance ??= SPCacheManager._internal();
+    _instance ??= SPCacheManager._init();
     return _instance!;
   }
 
-  SPCacheManager._internal();
+  SPCacheManager._init();
   static SPCacheManager? _instance;
 
   @override

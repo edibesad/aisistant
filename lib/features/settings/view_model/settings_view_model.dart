@@ -24,13 +24,11 @@ class SettingsViewModel extends BaseCubit<SettingsState> {
   }
 
   void onLanguagePressed() {
-    appRouter.push(const LanguageSelectionRoute()).then((Object? value) {
+    appRouter.push(const LanguageSelectionRoute()).then((value) {
       if (value != null) {
         context.setLocale(value as Locale);
         changeLanguageText(
-          Locales.values
-              .firstWhere((Locales element) => element.locale == value)
-              .text,
+          Locales.values.firstWhere((element) => element.locale == value).text,
         );
       }
       return value;

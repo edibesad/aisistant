@@ -25,6 +25,16 @@ class OneShotViewModel extends BaseCubit<OneShotState> {
   final String _url =
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
 
+  void onButtonPressed() {
+    if (state.isLoading) {
+      return;
+    }
+    // Close keyboard
+    FocusManager.instance.primaryFocus?.unfocus();
+    getPrompt();
+  }
+
+  // Get prompt from API and update state
   Future<void> getPrompt() async {
     if (!await _checkConditions()) {
       return;
@@ -35,16 +45,17 @@ class OneShotViewModel extends BaseCubit<OneShotState> {
 
     final GeminiRequest request = _prepareRequest();
 
-    log(request.toJson().toString());
-
     final ResponseModel response = await _prepareResponse(request);
 
+    // Clear prompt text field
     promptController.clear();
+
     final String message = await _handleResponse(response);
 
     emit(state.copyWith(isLoading: false, message: message));
   }
 
+  // Check if conditions are met to get prompt
   Future<bool> _checkConditions() async {
     final ConnectivityResult connectivityResult =
         await Connectivity().checkConnectivity();
@@ -63,6 +74,7 @@ class OneShotViewModel extends BaseCubit<OneShotState> {
     return true;
   }
 
+  // Prepare request to send to API
   GeminiRequest _prepareRequest() => GeminiRequest(
         safetySettings: <SafetySetting>[
           SafetySetting(
@@ -88,7 +100,7 @@ class OneShotViewModel extends BaseCubit<OneShotState> {
                 text: promptController.text,
               ),
             ],
-            role: 'user',
+            role: Role.USER,
           ),
         ],
         generationConfig: GenerationConfig(
@@ -96,6 +108,7 @@ class OneShotViewModel extends BaseCubit<OneShotState> {
         ),
       );
 
+  // Send request to API
   Future<ResponseModel> _prepareResponse(GeminiRequest request) =>
       networkRepository.postRequest(
         _url,
@@ -113,6 +126,7 @@ class OneShotViewModel extends BaseCubit<OneShotState> {
     getPrompt();
   }
 
+  // Handle response which coming from API
   Future<String> _handleResponse(ResponseModel response) async {
     String message = 'No data';
 
@@ -158,14 +172,7 @@ class OneShotViewModel extends BaseCubit<OneShotState> {
     return message;
   }
 
-  void onButtonPressed() {
-    if (state.isLoading) {
-      return;
-    }
-    FocusManager.instance.primaryFocus?.unfocus();
-    getPrompt();
-  }
-
+  // Navigate to settings page
   void onSettingsPressed() {
     appRouter.push(const SettingsRoute());
   }

@@ -13,7 +13,7 @@ class LanguageSelectionView extends StatelessWidget {
     return Scaffold(
       body: ListView.builder(
         itemCount: Locales.values.length,
-        itemBuilder: (BuildContext context, int index) => ListTile(
+        itemBuilder: (context, index) => ListTile(
           title: Text(Locales.values[index].text),
           onTap: () {
             AppStateItems.appRouter.pop(Locales.values[index].locale);

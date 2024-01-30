@@ -36,7 +36,7 @@ linter:
     - always_declare_return_types
     - always_put_control_body_on_new_line
     # - always_put_required_named_parameters_first # we prefer having parameters in the same order as fields https://github.com/flutter/flutter/issues/10219
-    - always_specify_types
+    # - always_specify_types
     # - always_use_package_imports # we do this commonly
     - annotate_overrides
     # - avoid_annotating_with_dynamic # conflicts with always_specify_types
@@ -72,7 +72,7 @@ linter:
     - avoid_slow_async_io
     - avoid_type_to_string
     - avoid_types_as_parameter_names
-    # - avoid_types_on_closure_parameters # conflicts with always_specify_types
+    - avoid_types_on_closure_parameters # conflicts with always_specify_types
     - avoid_unnecessary_containers
     - avoid_unused_constructor_parameters
     - avoid_void_async

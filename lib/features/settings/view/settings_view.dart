@@ -22,13 +22,13 @@ class _SettingsViewState extends BaseState<SettingsView>
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SettingsViewModel>(
-      create: (BuildContext context) => viewModel,
+      create: (context) => viewModel,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('settings').tr(),
         ),
         body: BlocListener<SettingsViewModel, SettingsState>(
-          listener: (BuildContext context, SettingsState state) {},
+          listener: (context, state) {},
           child: const Column(
             children: <Widget>[CommonSection()],
           ),

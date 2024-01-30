@@ -12,6 +12,7 @@ mixin OneShotViewMixin on BaseState<OneShotView> {
   void initState() {
     super.initState();
     _viewModel = OneShotViewModel();
+    _viewModel.context = context;
   }
 
   @override

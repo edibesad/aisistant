@@ -19,10 +19,10 @@ final class AppInit {
   Future<void> init() async {
     WidgetsFlutterBinding.ensureInitialized();
     AppStateContainer.setUp();
-    await runZonedGuarded(_initAsyncs, (Object error, StackTrace stack) {
+    await runZonedGuarded(_initAsyncs, (error, stack) {
       log(error.toString());
     });
-    await runZonedGuarded(_readCache, (Object error, StackTrace stack) {
+    await runZonedGuarded(_readCache, (error, stack) {
       log(error.toString());
     });
   }

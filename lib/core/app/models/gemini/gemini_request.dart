@@ -58,8 +58,15 @@ class Content {
   factory Content.fromJson(Map<String, dynamic> json) =>
       _$ContentFromJson(json);
   List<Part>? parts;
-  String? role;
+  Role? role;
   Map<String, dynamic> toJson() => _$ContentToJson(this);
+}
+
+enum Role {
+  @JsonValue('user')
+  USER,
+  @JsonValue('model')
+  MODEL,
 }
 
 @JsonSerializable()

@@ -16,13 +16,16 @@ mixin SettingsViewMixin on BaseState<SettingsView> {
   void initState() {
     super.initState();
     _viewModel = SettingsViewModel();
+
     viewModel.context = context;
-    WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _viewModel.changeLanguageText(
         Locales.values
-            .firstWhere((Locales element) => element.locale == context.locale)
+            .firstWhere((element) => element.locale == context.locale)
             .text,
       );
+
       switch (AppStateItems.appCache.settings!.themeMode!) {
         case ThemeMode.light:
           _viewModel.changeThemeMode('light');

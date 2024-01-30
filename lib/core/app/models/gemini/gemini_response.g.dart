@@ -45,6 +45,7 @@ Candidate _$CandidateFromJson(Map<String, dynamic> json) => Candidate(
               json['citationMetadata'] as Map<String, dynamic>),
       finishReason:
           $enumDecodeNullable(_$FinishReasonEnumMap, json['finishReason']),
+      tokenCount: json['tokenCount'] as int?,
     );
 
 // ignore: unused_element
@@ -60,6 +61,8 @@ abstract class _$CandidatePerFieldToJson {
   // ignore: unused_element
   static Object? finishReason(FinishReason? instance) =>
       _$FinishReasonEnumMap[instance];
+  // ignore: unused_element
+  static Object? tokenCount(int? instance) => instance;
 }
 
 Map<String, dynamic> _$CandidateToJson(Candidate instance) => <String, dynamic>{
@@ -67,6 +70,7 @@ Map<String, dynamic> _$CandidateToJson(Candidate instance) => <String, dynamic>{
       'safetyRatings': instance.safetyRatings?.map((e) => e.toJson()).toList(),
       'citationMetadata': instance.citationMetadata?.toJson(),
       'finishReason': _$FinishReasonEnumMap[instance.finishReason],
+      'tokenCount': instance.tokenCount,
     };
 
 const _$FinishReasonEnumMap = {

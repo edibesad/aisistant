@@ -13,7 +13,7 @@ final class AppLocalization extends EasyLocalization {
         );
 
   static final List<Locale> locales =
-      Locales.values.map((Locales e) => e.locale).toList();
+      Locales.values.map((e) => e.locale).toList();
   static const String translationsPath = 'assets/translations';
 
   static Future<void> updateLanguage({
