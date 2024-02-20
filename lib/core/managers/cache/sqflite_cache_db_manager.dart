@@ -25,6 +25,7 @@ class SQFLiteCacheDBManager extends CacheDBRepository {
   Future<void> _initDatabase() async {
     final String databasePath = await getDatabasesPath();
     final String path = '$databasePath/chat.db';
+    log(path);
     _database = await openDatabase(path, version: 1, onCreate: _onCreate);
   }
 
@@ -59,10 +60,24 @@ class SQFLiteCacheDBManager extends CacheDBRepository {
   @override
   Future<List<Content>> getMesagesByChatId(int chatId) async {
     try {
-      return (await _database.rawQuery(
-              'SELECT id, chat_id, role FROM message_table WHERE chat_id = ? ORDER BY id DESC',
-              [chatId]))
-          .map((e) => Content.fromJson(e))
+      final List<Map<dynamic, dynamic>> tempMessages = await _database.rawQuery(
+          'SELECT id,role FROM message_table WHERE chat_id = ?', [chatId]);
+
+      final List<Map<dynamic, dynamic>> messages = [];
+
+      for (final Map<dynamic, dynamic> message in tempMessages) {
+        final tempMap = Map<String, dynamic>.from(message);
+
+        tempMap.addAll({
+          'parts': await _database.rawQuery(
+              'SELECT message as text FROM message_part_table WHERE message_id = ?',
+              [message['id']])
+        });
+        log(tempMap.toString());
+        messages.add(tempMap);
+      }
+      return messages
+          .map((e) => Content.fromJson(Map<String, dynamic>.from(e)))
           .toList();
     } catch (e) {
       if (kDebugMode) {
@@ -90,7 +105,7 @@ class SQFLiteCacheDBManager extends CacheDBRepository {
     try {
       final int id = await _database.rawInsert(
           'INSERT INTO message_table (chat_id, role) VALUES (?, ?)',
-          [chatId, content.role]);
+          [chatId, content.roleToString()]);
       for (final Part element in content.parts!) {
         _database.rawInsert(
             'INSERT INTO message_part_table (message, message_id) VALUES (?, ?)',

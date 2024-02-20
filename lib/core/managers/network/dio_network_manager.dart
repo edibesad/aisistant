@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../app/models/response_model.dart';
 import '../../repository/network_repository.dart';
@@ -54,6 +55,10 @@ class DioManager extends NetworkRepository {
         message: 'success'.tr(),
       );
     } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.connectionError) {
+        Fluttertoast.showToast(msg: 'check_internet_connection'.tr());
+      }
       return ResponseModel(
         result: false,
         message: e.response.toString(),
@@ -85,9 +90,14 @@ class DioManager extends NetworkRepository {
         message: 'success'.tr(),
       );
     } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.connectionError) {
+        Fluttertoast.showToast(msg: 'check_internet_connection'.tr());
+      }
       if (e.response is Map<String, dynamic>) {
         return ResponseModel.fromJson(e.response!.data as Map<String, dynamic>);
       }
+
       return ResponseModel(
         result: false,
         message: e.toString(),
@@ -120,6 +130,10 @@ class DioManager extends NetworkRepository {
         message: 'success'.tr(),
       );
     } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.connectionError) {
+        Fluttertoast.showToast(msg: 'check_internet_connection'.tr());
+      }
       if (e.response is Map<String, dynamic>) {
         return ResponseModel.fromJson(e.response! as Map<String, dynamic>);
       }

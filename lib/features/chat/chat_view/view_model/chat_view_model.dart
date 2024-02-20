@@ -4,65 +4,118 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
-import '../../../core/app/models/gemini/gemini_request.dart';
-import '../../../core/app/models/gemini/gemini_response.dart';
-import '../../../core/app/models/response_model.dart';
-import '../../../core/base/base_cubit.dart';
-import '../../../core/constants/hidden_constants.dart';
-import '../../../core/init/navigation/app_navigation.dart';
-import 'state/one_shot_state.dart';
+import '../../../../core/app/models/chat.dart';
+import '../../../../core/app/models/gemini/gemini_request.dart';
+import '../../../../core/app/models/gemini/gemini_response.dart';
+import '../../../../core/app/models/response_model.dart';
+import '../../../../core/base/base_cubit.dart';
+import '../../../../core/constants/hidden_constants.dart';
+import 'state/chat_state.dart';
 
-class OneShotViewModel extends BaseCubit<OneShotState> {
-  OneShotViewModel() : super(const OneShotState());
-
-  TextEditingController promptController = TextEditingController();
-
-  DateTime? lastPromptSubmitted;
+class ChatViewModel extends BaseCubit<ChatState> {
+  ChatViewModel() : super(const ChatState());
 
   ScrollController scrollController = ScrollController();
+
+  TextEditingController textEditingController = TextEditingController();
+
+  Chat? chat;
+
+  DateTime? lastPromptSubmitted;
 
   final String _url =
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
 
-  void onButtonPressed() {
-    if (state.isLoading) {
-      return;
-    }
-    // Close keyboard
-    FocusManager.instance.primaryFocus?.unfocus();
-    getPrompt();
+  void _changeState(
+      {List<Content>? messages, bool? isLoading, bool? isMessageWaiting}) {
+    emit(state.copyWith(
+        messages: messages,
+        isLoading: isLoading,
+        isMessageWaiting: isMessageWaiting));
   }
 
-  // Get prompt from API and update state
-  Future<void> getPrompt() async {
-    if (!await _checkConditions()) {
-      return;
+  Future<void> fetchMessages() async {
+    if (chat != null) {
+      _changeState(isLoading: true);
+
+      final List<Content> messages =
+          await cacheDbRepository.getMesagesByChatId(chat!.id);
+
+      _changeState(messages: messages, isLoading: false);
     }
-    emit(state.copyWith(isLoading: true));
+  }
 
-    lastPromptSubmitted = DateTime.now();
+  Future<void> onButtonPressed() async {
+    if (textEditingController.text.isNotEmpty) {
+      if (!await _checkConditions()) {
+        return;
+      }
 
-    final GeminiRequest request = _prepareRequest();
+      if (chat == null) {
+        await createChat('untitled'.tr());
+      }
 
-    final ResponseModel response = await _prepareResponse(request);
+      final Content message = Content(
+        role: Role.USER,
+        parts: [Part(text: textEditingController.text)],
+      );
 
-    // Clear prompt text field
-    promptController.clear();
+      final List<Content> messages = List.from(state.messages);
 
-    final String message = await _handleResponse(response);
+      messages.add(message);
 
-    emit(state.copyWith(isLoading: false, message: message));
+      _changeState(messages: messages);
+
+      textEditingController.clear();
+      try {
+        final GeminiRequest request = _prepareRequest();
+
+        _changeState(isMessageWaiting: true);
+
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+
+        final ResponseModel response = await _prepareResponse(request);
+        final Content responseMessage = Content(
+          role: Role.MODEL,
+          parts: [Part(text: await _handleResponse(response))],
+        );
+
+        _changeState(
+            isMessageWaiting: false,
+            messages: List.from(messages)..add(responseMessage));
+
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+
+        cacheDbRepository.insertMessage(message, chat!.id);
+        cacheDbRepository.insertMessage(responseMessage, chat!.id);
+      } catch (e) {
+        _changeState(isMessageWaiting: false);
+        messages.add(
+          Content(
+            role: Role.MODEL,
+            parts: [Part(text: 'error'.tr())],
+          ),
+        );
+      }
+
+      _changeState(isMessageWaiting: false);
+    }
   }
 
   // Check if conditions are met to get prompt
   Future<bool> _checkConditions() async {
     final ConnectivityResult connectivityResult =
         await Connectivity().checkConnectivity();
+    final bool hasConnection = await InternetConnectionChecker().hasConnection;
 
-    if (connectivityResult == ConnectivityResult.none) {
-      emit(state.copyWith(
-          isLoading: false, message: 'check_internet_connection'.tr()));
+    log(hasConnection.toString());
+
+    if (connectivityResult == ConnectivityResult.none && !hasConnection) {
+      emit(state.copyWith(isLoading: false));
+      Fluttertoast.showToast(msg: 'check_internet_connection'.tr());
+
       return false;
     }
     if (lastPromptSubmitted != null &&
@@ -90,23 +143,31 @@ class OneShotViewModel extends BaseCubit<OneShotState> {
               category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
               threshold: HarmBlockThreshold.BLOCK_NONE),
         ],
-        contents: <Content>[
-          Content(
-            parts: <Part>[
-              Part(text: HiddenConstants.CONFIGURATION_PROMPT),
-              Part(
-                text: promptController.text,
-              ),
-            ],
-            role: Role.USER,
-          ),
+        contents: [
+          Content(parts: [
+            Part(text: HiddenConstants.CONFIGURATION_PROMPT),
+          ], role: Role.USER),
+          Content(parts: [
+            Part(text: 'Understood!'),
+          ], role: Role.MODEL),
+          ...state.messages
         ],
         generationConfig: GenerationConfig(
           candidateCount: 1,
         ),
       );
 
-  // Send request to API
+  Future<void> createChat(String title) async {
+    final int id = await cacheDbRepository.insertChat(title);
+    chat = Chat(id: id, title: title);
+  }
+
+  void onSubmitted(String value) {
+    if (value.isNotEmpty && !state.isMessageWaiting) {
+      onButtonPressed();
+    }
+  }
+
   Future<ResponseModel> _prepareResponse(GeminiRequest request) =>
       networkRepository.postRequest(
         _url,
@@ -116,14 +177,6 @@ class OneShotViewModel extends BaseCubit<OneShotState> {
         data: request.toJson(),
       );
 
-  void onPromptSubmitted(String value) {
-    if (state.isLoading) {
-      return;
-    }
-    FocusManager.instance.primaryFocus?.unfocus();
-    getPrompt();
-  }
-
   // Handle response which coming from API
   Future<String> _handleResponse(ResponseModel response) async {
     String message = 'No data';
@@ -132,8 +185,6 @@ class OneShotViewModel extends BaseCubit<OneShotState> {
       if (response.data is Map<String, dynamic>) {
         final GeminiResponse geminiResponse =
             GeminiResponse.fromJson(response.data as Map<String, dynamic>);
-
-        log(geminiResponse.toJson().toString());
 
         if (geminiResponse.candidates != null &&
             geminiResponse.candidates!.isNotEmpty) {
@@ -168,10 +219,5 @@ class OneShotViewModel extends BaseCubit<OneShotState> {
       message = response.message ?? 'Error';
     }
     return message;
-  }
-
-  // Navigate to settings page
-  void onSettingsPressed() {
-    appRouter.push(const SettingsRoute());
   }
 }

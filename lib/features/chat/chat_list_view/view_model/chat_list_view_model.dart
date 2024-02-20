@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import '../../../../core/app/models/chat.dart';
 import '../../../../core/base/base_cubit.dart';
+import '../../../../core/init/navigation/app_navigation.dart';
 import 'state/chat_list_state.dart';
 
 class ChatListViewModel extends BaseCubit<ChatListState> {
@@ -12,12 +13,7 @@ class ChatListViewModel extends BaseCubit<ChatListState> {
   }
 
   Future<void> addButtonOnPressed(String title) async {
-    final int id = await cacheDbRepository.insertChat('title');
-    final List<Chat> chats = List.from(state.chats);
-    log(state.chats.hashCode.toString());
-    log(chats.hashCode.toString());
-    chats.insert(0, Chat(id: id, title: title));
-    changeState(chats: chats);
+    navigateToChat();
   }
 
   void fetchChats() {
@@ -34,5 +30,11 @@ class ChatListViewModel extends BaseCubit<ChatListState> {
     final List<Chat> chats = List.of(state.chats);
     chats.removeWhere((element) => element.id == id);
     changeState(chats: chats);
+  }
+
+  void navigateToChat([Chat? chat]) {
+    appRouter.push(ChatRoute(chat: chat)).then((value) {
+      fetchChats();
+    });
   }
 }

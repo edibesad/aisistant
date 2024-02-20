@@ -60,6 +60,18 @@ class Content {
   List<Part>? parts;
   Role? role;
   Map<String, dynamic> toJson() => _$ContentToJson(this);
+
+  String? roleToString() {
+    if (role == null) {
+      return null;
+    }
+    switch (role!) {
+      case Role.USER:
+        return 'user';
+      case Role.MODEL:
+        return 'model';
+    }
+  }
 }
 
 enum Role {

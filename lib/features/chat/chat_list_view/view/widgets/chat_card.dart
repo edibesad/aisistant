@@ -13,6 +13,9 @@ class ChatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
         child: ListTile(
+      onTap: () {
+        context.read<ChatListViewModel>().navigateToChat(chat);
+      },
       title: Text(chat.title),
       trailing: IconButton(
         onPressed: () {
