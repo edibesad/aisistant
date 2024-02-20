@@ -10,7 +10,6 @@ import '../../../core/app/models/gemini/gemini_response.dart';
 import '../../../core/app/models/response_model.dart';
 import '../../../core/base/base_cubit.dart';
 import '../../../core/constants/hidden_constants.dart';
-import '../../../core/init/navigation/app_navigation.dart';
 import 'state/one_shot_state.dart';
 
 class OneShotViewModel extends BaseCubit<OneShotState> {
@@ -168,10 +167,5 @@ class OneShotViewModel extends BaseCubit<OneShotState> {
       message = response.message ?? 'Error';
     }
     return message;
-  }
-
-  // Navigate to settings page
-  void onSettingsPressed() {
-    appRouter.push(const SettingsRoute());
   }
 }

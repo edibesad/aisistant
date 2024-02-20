@@ -5,6 +5,8 @@ import '../home_view.dart';
 mixin HomeViewMixin on BaseState<HomeView> {
   late final HomeViewModel _viewModel;
 
+  HomeViewModel get viewModel => _viewModel;
+
   @override
   void initState() {
     super.initState();

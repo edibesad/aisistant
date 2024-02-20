@@ -1,4 +1,14 @@
 {
     "ask_me_anything": "You can ask me anything you want.",
-    "dark": "Dark"
+    "dark": "Dark",
+    "light": "Light",
+    "home": "Home",
+    "one_shot": "One Shot",
+    "chat": "Conversational Chat",
+    "settings": "Settings",
+    "common": "Common Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "system": "System",
+    "prompt": "Prompt"
 }

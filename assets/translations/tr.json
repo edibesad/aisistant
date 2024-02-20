@@ -1,1 +1,14 @@
-{}
+{
+    "ask_me_anything": "Bana istediğin her şeyi sorabilirsin.",
+    "dark": "Karanlık",
+    "light": "Açık",
+    "home": "Ana Sayfa",
+    "one_shot": "Tek Cevap",
+    "chat": "Sohbet",
+    "settings": "Ayarlar",
+    "common": "Genel",
+    "language": "Dil",
+    "theme": "Tema",
+    "system": "Sistem",
+    "prompt": "Mesaj"
+}

@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/base/base_state.dart';
@@ -14,14 +15,25 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends BaseState<HomeView> with HomeViewMixin {
+  double divider = 40;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
+        title: const Text('home').tr(),
       ),
-      body: const Center(
-        child: HomeContainer(title: "one_shot"),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            HomeContainer(title: 'one_shot', onTap: viewModel.onOneShotTap),
+            SizedBox(height: divider),
+            HomeContainer(title: 'chat', onTap: viewModel.onChatTap),
+            SizedBox(height: divider),
+            HomeContainer(title: 'settings', onTap: viewModel.onSettingsTap),
+          ],
+        ),
       ),
     );
   }

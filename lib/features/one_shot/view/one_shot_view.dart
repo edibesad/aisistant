@@ -56,12 +56,6 @@ class _OneShotViewState extends BaseState<OneShotView> with OneShotViewMixin {
   AppBar _buildAppBar() {
     return AppBar(
       title: const Text('one_shot').tr(),
-      actions: <Widget>[
-        IconButton(
-          onPressed: viewModel.onSettingsPressed,
-          icon: const Icon(Icons.settings),
-        ),
-      ],
     );
   }
 }
