@@ -1,5 +1,7 @@
 // ignore_for_file: always_specify_types
 
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,6 +28,7 @@ class MainApp extends StatelessWidget {
       create: (context) => AppViewModel(),
       child: BlocBuilder<AppViewModel, AppState>(
         builder: (context, state) {
+          log('MainApp: ${state.locale.text}');
           return MaterialApp.router(
             title: AppConstants.APP_NAME,
             themeMode: state.themeMode,

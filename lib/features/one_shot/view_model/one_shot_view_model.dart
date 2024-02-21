@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -38,6 +39,7 @@ class OneShotViewModel extends BaseCubit<OneShotState> {
     if (!await _checkConditions()) {
       return;
     }
+    FirebaseAnalytics.instance.logEvent(name: 'one_shot_usage');
     emit(state.copyWith(isLoading: true));
 
     lastPromptSubmitted = DateTime.now();

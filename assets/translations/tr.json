@@ -10,5 +10,6 @@
     "language": "Dil",
     "theme": "Tema",
     "system": "Sistem",
-    "prompt": "Mesaj"
+    "prompt": "Mesaj",
+    "language_changed": "Dil değiştirildi. Bazı ayarların uygulanması için yeniden başlatmanız gerekebilir."
 }

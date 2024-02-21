@@ -3,8 +3,9 @@ import 'dart:developer';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
-import '../../../core/app/state/container/app_state_container.dart';
+import '../../../core/app/state/container/index.dart';
 import '../../../core/app/view_model/app_view_model.dart';
 import '../../../core/base/base_cubit.dart';
 import '../../../core/constants/enums/locales.dart';
@@ -24,12 +25,19 @@ class SettingsViewModel extends BaseCubit<SettingsState> {
   }
 
   void onLanguagePressed() {
-    appRouter.push(const LanguageSelectionRoute()).then((value) {
+    appRouter.push(const LanguageSelectionRoute()).then((value) async {
       if (value != null) {
-        context.setLocale(value as Locale);
-        changeLanguageText(
-          Locales.values.firstWhere((element) => element.locale == value).text,
-        );
+        await context.setLocale(value as Locale).then((_) {
+          context.read<AppViewModel>().changeLocale(
+                Locales.values.firstWhere((element) => element.locale == value),
+              );
+        });
+        changeLanguageText(Locales.values
+            .firstWhere((element) => element.locale == value)
+            .text);
+
+        Fluttertoast.showToast(
+            msg: 'language_changed'.tr(), toastLength: Toast.LENGTH_LONG);
       }
       return value;
     });
@@ -41,14 +49,17 @@ class SettingsViewModel extends BaseCubit<SettingsState> {
       case 'light':
         log(themeMode);
         context.read<AppViewModel>().changeThemeMode(ThemeMode.light);
+        AppStateItems.appCache.settings!.themeMode = ThemeMode.light;
         AppStateContainer.read<CacheRepository>().put('theme_mode', 'light');
       case 'dark':
         log(themeMode);
         context.read<AppViewModel>().changeThemeMode(ThemeMode.dark);
+        AppStateItems.appCache.settings!.themeMode = ThemeMode.dark;
         AppStateContainer.read<CacheRepository>().put('theme_mode', 'dark');
       default:
         log(themeMode);
         context.read<AppViewModel>().changeThemeMode(ThemeMode.system);
+        AppStateItems.appCache.settings!.themeMode = ThemeMode.system;
         AppStateContainer.read<CacheRepository>().put('theme_mode', 'system');
         break;
     }

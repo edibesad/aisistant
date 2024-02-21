@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -55,6 +56,7 @@ class ChatViewModel extends BaseCubit<ChatState> {
 
       if (chat == null) {
         await createChat('untitled'.tr());
+        FirebaseAnalytics.instance.logEvent(name: 'create_chat');
       }
 
       final Content message = Content(
@@ -63,6 +65,8 @@ class ChatViewModel extends BaseCubit<ChatState> {
       );
 
       final List<Content> messages = List.from(state.messages);
+
+      FirebaseAnalytics.instance.logEvent(name: 'chat_message_sent');
 
       messages.add(message);
 
