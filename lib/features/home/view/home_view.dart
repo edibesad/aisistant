@@ -26,31 +26,33 @@ class _HomeViewState extends BaseState<HomeView> with HomeViewMixin {
         title: const Text('home').tr(),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            HomeContainer(
-                contentColor: context.colorScheme.onSurface,
-                backgroundColor: context.theme.colorScheme.secondary,
-                icon: FontAwesomeIcons.comment,
-                title: 'one_shot',
-                onTap: viewModel.onOneShotTap),
-            SizedBox(height: _divider),
-            HomeContainer(
-                backgroundColor:
-                    context.themeData.colorScheme.tertiaryContainer,
-                icon: FontAwesomeIcons.comments,
-                title: 'chat',
-                onTap: viewModel.onChatTap),
-            SizedBox(height: _divider),
-            HomeContainer(
-                backgroundColor:
-                    context.themeData.colorScheme.tertiaryContainer,
-                contentColor: context.theme.colorScheme.onTertiaryContainer,
-                icon: FontAwesomeIcons.gear,
-                title: 'settings',
-                onTap: viewModel.onSettingsTap),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              HomeContainer(
+                  contentColor: context.colorScheme.onSurface,
+                  backgroundColor: context.theme.colorScheme.secondary,
+                  icon: FontAwesomeIcons.comment,
+                  title: 'one_shot',
+                  onTap: viewModel.onOneShotTap),
+              SizedBox(height: _divider),
+              HomeContainer(
+                  backgroundColor:
+                      context.themeData.colorScheme.tertiaryContainer,
+                  icon: FontAwesomeIcons.comments,
+                  title: 'chat',
+                  onTap: viewModel.onChatTap),
+              SizedBox(height: _divider),
+              HomeContainer(
+                  backgroundColor:
+                      context.themeData.colorScheme.tertiaryContainer,
+                  contentColor: context.theme.colorScheme.onTertiaryContainer,
+                  icon: FontAwesomeIcons.gear,
+                  title: 'settings',
+                  onTap: viewModel.onSettingsTap),
+            ],
+          ),
         ),
       ),
     );
