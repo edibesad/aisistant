@@ -1,3 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+
+import '../../../../core/app/models/gemini/gemini_request.dart';
+import '../../../../core/app/models/gemini/gemini_response.dart';
 import '../../../../core/base/base_state.dart';
 import '../../view_model/one_shot_view_model.dart';
 
@@ -13,6 +18,17 @@ mixin OneShotViewMixin on BaseState<OneShotView> {
     super.initState();
     _viewModel = OneShotViewModel();
     _viewModel.context = context;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      viewModel.emit(viewModel.state.copyWith(messages: [
+        Content(
+          parts: <Part>[
+            Part(text: 'ask_me_anything'.tr()),
+          ],
+          role: Role.MODEL,
+        ),
+      ]));
+    });
   }
 
   @override

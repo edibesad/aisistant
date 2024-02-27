@@ -12,6 +12,8 @@ import 'core/app/view_model/app_view_model.dart';
 import 'core/constants/app_constants.dart';
 import 'core/init/app_init.dart';
 import 'core/init/app_localization.dart';
+import 'core/init/theme/dark_app_theme.dart';
+import 'core/init/theme/light_app_theme.dart';
 
 Future<void> main() async {
   await AppInit().init();
@@ -36,8 +38,8 @@ class MainApp extends StatelessWidget {
             locale: context.locale,
             supportedLocales: context.supportedLocales,
             localizationsDelegates: context.localizationDelegates,
-            darkTheme: ThemeData.dark(),
-            theme: ThemeData.light(),
+            darkTheme: DarkAppTheme().themeData,
+            theme: LightAppTheme().themeData,
           );
         },
       ),

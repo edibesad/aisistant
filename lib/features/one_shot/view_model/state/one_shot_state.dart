@@ -1,25 +1,27 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../../../core/app/models/gemini/gemini_request.dart';
+
 @immutable
 class OneShotState extends Equatable {
   const OneShotState({
     this.isLoading = false,
-    this.message = 'ask_me_anything',
+    this.messages = const [],
   });
   final bool isLoading;
-  final String message;
+  final List<Content> messages;
 
   @override
-  List<Object?> get props => <Object?>[isLoading, message];
+  List<Object?> get props => <Object?>[isLoading, messages];
 
   OneShotState copyWith({
     bool? isLoading,
-    String? message,
+    List<Content>? messages,
   }) {
     return OneShotState(
       isLoading: isLoading ?? this.isLoading,
-      message: message ?? this.message,
+      messages: messages ?? this.messages,
     );
   }
 }

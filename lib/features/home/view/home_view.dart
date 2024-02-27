@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../core/base/base_state.dart';
+import '../../../core/extension/context_extension.dart';
 import 'mixin/home_view_mixin.dart';
 import 'widgets/page_container.dart';
 
@@ -15,7 +17,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends BaseState<HomeView> with HomeViewMixin {
-  double divider = 40;
+  final double _divider = 40;
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +29,27 @@ class _HomeViewState extends BaseState<HomeView> with HomeViewMixin {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            HomeContainer(title: 'one_shot', onTap: viewModel.onOneShotTap),
-            SizedBox(height: divider),
-            HomeContainer(title: 'chat', onTap: viewModel.onChatTap),
-            SizedBox(height: divider),
-            HomeContainer(title: 'settings', onTap: viewModel.onSettingsTap),
+            HomeContainer(
+                contentColor: context.colorScheme.onSurface,
+                backgroundColor: context.theme.colorScheme.secondary,
+                icon: FontAwesomeIcons.comment,
+                title: 'one_shot',
+                onTap: viewModel.onOneShotTap),
+            SizedBox(height: _divider),
+            HomeContainer(
+                backgroundColor:
+                    context.themeData.colorScheme.tertiaryContainer,
+                icon: FontAwesomeIcons.comments,
+                title: 'chat',
+                onTap: viewModel.onChatTap),
+            SizedBox(height: _divider),
+            HomeContainer(
+                backgroundColor:
+                    context.themeData.colorScheme.tertiaryContainer,
+                contentColor: context.theme.colorScheme.onTertiaryContainer,
+                icon: FontAwesomeIcons.gear,
+                title: 'settings',
+                onTap: viewModel.onSettingsTap),
           ],
         ),
       ),

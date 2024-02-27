@@ -5,7 +5,7 @@ import 'app_theme.dart';
 class LightAppTheme implements AppTheme {
   final ColorScheme _lightColorScheme = const ColorScheme(
     brightness: Brightness.light,
-    primary: Color(0xFF006877),
+    primary: Color.fromARGB(255, 127, 190, 200),
     onPrimary: Color(0xFFFFFFFF),
     primaryContainer: Color(0xFFA4EEFF),
     onPrimaryContainer: Color(0xFF001F25),

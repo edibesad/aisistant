@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
@@ -26,15 +27,21 @@ class ChatViewModel extends BaseCubit<ChatState> {
 
   DateTime? lastPromptSubmitted;
 
-  final String _url =
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
-
   void _changeState(
       {List<Content>? messages, bool? isLoading, bool? isMessageWaiting}) {
     emit(state.copyWith(
         messages: messages,
         isLoading: isLoading,
         isMessageWaiting: isMessageWaiting));
+
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+      log(scrollController.position.maxScrollExtent.toString());
+    });
   }
 
   Future<void> fetchMessages() async {
@@ -49,72 +56,78 @@ class ChatViewModel extends BaseCubit<ChatState> {
   }
 
   Future<void> onButtonPressed() async {
-    if (textEditingController.text.isNotEmpty) {
-      if (!await _checkConditions()) {
-        return;
-      }
+    log(scrollController.position.maxScrollExtent.toString());
+    if (!await _checkConditions()) {
+      return;
+    }
 
-      if (chat == null) {
-        await createChat('untitled'.tr());
-        FirebaseAnalytics.instance.logEvent(name: 'create_chat');
-      }
+    if (chat == null) {
+      await createChat('untitled'.tr());
+      FirebaseAnalytics.instance.logEvent(name: 'create_chat');
+    }
 
-      final Content message = Content(
-        role: Role.USER,
-        parts: [Part(text: textEditingController.text)],
+    final Content message = Content(
+      role: Role.USER,
+      parts: [Part(text: textEditingController.text)],
+    );
+
+    final List<Content> messages = List.from(state.messages);
+
+    FirebaseAnalytics.instance.logEvent(name: 'chat_message_sent');
+    messages.add(message);
+
+    _changeState(messages: messages);
+
+    textEditingController.clear();
+    try {
+      final GeminiRequest request = _prepareRequest();
+
+      _changeState(isMessageWaiting: true);
+
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+
+      final ResponseModel response = await _prepareResponse(request);
+      final Content responseMessage = Content(
+        role: Role.MODEL,
+        parts: [Part(text: _handleResponse(response))],
       );
 
-      final List<Content> messages = List.from(state.messages);
+      _changeState(
+          isMessageWaiting: false,
+          messages: List.from(messages)..add(responseMessage));
 
-      FirebaseAnalytics.instance.logEvent(name: 'chat_message_sent');
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
 
-      messages.add(message);
-
-      _changeState(messages: messages);
-
-      textEditingController.clear();
-      try {
-        final GeminiRequest request = _prepareRequest();
-
-        _changeState(isMessageWaiting: true);
-
-        scrollController.jumpTo(scrollController.position.maxScrollExtent);
-
-        final ResponseModel response = await _prepareResponse(request);
-        final Content responseMessage = Content(
-          role: Role.MODEL,
-          parts: [Part(text: await _handleResponse(response))],
-        );
-
-        _changeState(
-            isMessageWaiting: false,
-            messages: List.from(messages)..add(responseMessage));
-
-        scrollController.jumpTo(scrollController.position.maxScrollExtent);
-
-        cacheDbRepository.insertMessage(message, chat!.id);
-        cacheDbRepository.insertMessage(responseMessage, chat!.id);
-      } catch (e) {
-        _changeState(isMessageWaiting: false);
-        messages.add(
-          Content(
-            role: Role.MODEL,
-            parts: [Part(text: 'error'.tr())],
-          ),
-        );
-      }
-
+      cacheDbRepository.insertMessage(message, chat!.id);
+      cacheDbRepository.insertMessage(responseMessage, chat!.id);
+    } catch (e) {
       _changeState(isMessageWaiting: false);
+      messages.add(
+        Content(
+          role: Role.MODEL,
+          parts: [Part(text: 'error'.tr())],
+        ),
+      );
     }
+
+    _changeState(isMessageWaiting: false);
   }
 
   // Check if conditions are met to get prompt
   Future<bool> _checkConditions() async {
+    if (textEditingController.text.isEmpty) {
+      return false;
+    }
+
+    if (lastPromptSubmitted != null &&
+        DateTime.now().difference(lastPromptSubmitted!).inSeconds < 30) {
+      Fluttertoast.showToast(msg: 'wait_30_seconds'.tr());
+      return false;
+    }
+
     final ConnectivityResult connectivityResult =
         await Connectivity().checkConnectivity();
     final bool hasConnection = await InternetConnectionChecker().hasConnection;
-
-    log(hasConnection.toString());
 
     if (connectivityResult == ConnectivityResult.none && !hasConnection) {
       emit(state.copyWith(isLoading: false));
@@ -148,10 +161,10 @@ class ChatViewModel extends BaseCubit<ChatState> {
               threshold: HarmBlockThreshold.BLOCK_NONE),
         ],
         contents: [
-          Content(parts: [
+          const Content(parts: [
             Part(text: HiddenConstants.CONFIGURATION_PROMPT),
           ], role: Role.USER),
-          Content(parts: [
+          const Content(parts: [
             Part(text: 'Understood!'),
           ], role: Role.MODEL),
           ...state.messages
@@ -174,15 +187,14 @@ class ChatViewModel extends BaseCubit<ChatState> {
 
   Future<ResponseModel> _prepareResponse(GeminiRequest request) =>
       networkRepository.postRequest(
-        _url,
         params: <String, dynamic>{
           'key': HiddenConstants.API_KEY,
         },
         data: request.toJson(),
       );
 
-  // Handle response which coming from API
-  Future<String> _handleResponse(ResponseModel response) async {
+  // Handle response which is coming from API
+  String _handleResponse(ResponseModel response) {
     String message = 'No data';
 
     if (response.result!) {

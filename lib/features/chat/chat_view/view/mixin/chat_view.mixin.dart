@@ -19,5 +19,6 @@ mixin ChatViewMixin on BaseState<ChatView> {
   void dispose() {
     super.dispose();
     _viewModel.scrollController.dispose();
+    _viewModel.textEditingController.dispose();
   }
 }

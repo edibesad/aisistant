@@ -12,6 +12,8 @@ class AppViewModel extends BaseCubit<AppState> {
                 AppStateItems.appCache.settings?.themeMode ?? ThemeMode.system,
             locale: AppStateItems.appCache.settings?.locale ?? Locales.en));
 
+  DateTime? lastPromptSubmitted;
+
   void changeThemeMode(ThemeMode themeMode) {
     emit(state.copyWith(themeMode: themeMode));
   }
