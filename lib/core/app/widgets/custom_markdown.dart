@@ -17,11 +17,11 @@ class CustomMarkdown extends StatelessWidget {
         styleSheet: MarkdownStyleSheet(
             code: TextStyle(
               fontFamily: GoogleFonts.cutiveMono().fontFamily,
-              fontSize: 16,
+              fontSize: MediaQuery.of(context).textScaler.scale(16),
               color: isDark ? Colors.white : Colors.black,
             ),
             p: TextStyle(
-                fontSize: 18,
+                fontSize: MediaQuery.of(context).textScaler.scale(18),
                 color: context.themeData.brightness == Brightness.dark
                     ? Colors.white
                     : Colors.black)),

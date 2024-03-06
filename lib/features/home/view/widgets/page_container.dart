@@ -1,8 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/extension/context_extension.dart';
-
 class HomeContainer extends StatelessWidget {
   const HomeContainer(
       {super.key,
@@ -29,15 +27,15 @@ class HomeContainer extends StatelessWidget {
         decoration: BoxDecoration(
           boxShadow: const [
             BoxShadow(
-              offset: Offset(4, 10),
+              offset: Offset(-4, 12),
               blurStyle: BlurStyle.solid,
             )
           ],
           color: backgroundColor,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: context.theme.colorScheme.tertiary,
-            width: 2,
+            color: contentColor ?? Colors.white,
+            width: 4,
           ),
         ),
         child: Padding(

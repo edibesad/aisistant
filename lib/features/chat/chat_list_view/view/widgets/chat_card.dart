@@ -13,17 +13,29 @@ class ChatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-        color: context.colorScheme.primary,
+    return Padding(
+      padding: context.paddingLow,
+      child: Container(
+        decoration: BoxDecoration(
+          color: context.theme.colorScheme.primary,
+          borderRadius: BorderRadius.circular(25),
+          border: context.isDark
+              ? null
+              : Border.all(color: context.colorScheme.onTertiary, width: 2),
+        ),
         child: ListTile(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
           onTap: () {
             context.read<ChatListViewModel>().navigateToChat(chat);
           },
           title: Text(chat.title,
               style: TextStyle(
-                  color: context.colorScheme.onPrimary,
+                  color: context.isDark
+                      ? context.colorScheme.onPrimary
+                      : context.colorScheme.onTertiary,
                   fontWeight: FontWeight.bold,
-                  fontSize: MediaQuery.of(context).size.width * 0.08)),
+                  fontSize: MediaQuery.of(context).textScaler.scale(24))),
           trailing: IconButton(
             onPressed: () {
               context.read<ChatListViewModel>().deleteChat(chat.id);
@@ -33,6 +45,8 @@ class ChatCard extends StatelessWidget {
               color: context.colorScheme.onPrimary,
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

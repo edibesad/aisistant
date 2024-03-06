@@ -13,26 +13,18 @@ class ThemeTile extends BlocSelector<SettingsViewModel, SettingsState, String> {
           selector: (state) => state.themeMode,
           builder: (context, state) => SettingsTile(
             title: const Text('theme').tr(),
-            trailing: Chip(
-              label: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.21,
-                height: MediaQuery.of(context).size.height * 0.04,
-                child: DropdownButton<String>(
-                  borderRadius: BorderRadius.circular(10),
-                  iconSize: 36,
-                  value: state,
-                  items: <DropdownMenuItem<String>>[
-                    buildDropdownMenuItem('system', context),
-                    buildDropdownMenuItem('light', context),
-                    buildDropdownMenuItem('dark', context),
-                  ],
-                  onChanged: (value) {
-                    context
-                        .read<SettingsViewModel>()
-                        .onThemeModeChanged(value!);
-                  },
-                ),
-              ),
+            trailing: DropdownButton<String>(
+              borderRadius: BorderRadius.circular(10),
+              iconSize: 36,
+              value: state,
+              items: <DropdownMenuItem<String>>[
+                buildDropdownMenuItem('system', context),
+                buildDropdownMenuItem('light', context),
+                buildDropdownMenuItem('dark', context),
+              ],
+              onChanged: (value) {
+                context.read<SettingsViewModel>().onThemeModeChanged(value!);
+              },
             ),
           ),
         );

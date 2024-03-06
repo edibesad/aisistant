@@ -11,6 +11,7 @@ class SubmitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton.filled(
+      color: context.theme.colorScheme.onTertiary,
       onPressed: onPressed,
       icon: SizedBox(
           width: context.mediaQuery.size.width * .1,

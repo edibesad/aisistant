@@ -14,38 +14,37 @@ class MessageContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (role == Role.MODEL)
-            const CircleAvatar(
-              foregroundImage: AssetImage(AssetsConstants.ROBOT_ASSET),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (role == Role.MODEL)
+          CircleAvatar(
+            backgroundColor: context.secondaryColor,
+            foregroundImage: const AssetImage(AssetsConstants.ROBOT_ASSET),
+          ),
+        if (role == Role.MODEL)
+          SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+        Expanded(
+          child: Container(
+            width: context.width,
+            decoration: BoxDecoration(
+              color: context.themeData.colorScheme.primaryContainer,
+              borderRadius: const BorderRadius.all(Radius.circular(16)),
             ),
-          if (role == Role.MODEL)
-            SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-          Expanded(
-            child: Container(
-              width: context.width,
-              decoration: BoxDecoration(
-                color: context.themeData.colorScheme.primaryContainer,
-                borderRadius: const BorderRadius.all(Radius.circular(16)),
-              ),
-              child: Padding(
-                padding: context.paddingLow,
-                child: content,
-              ),
+            child: Padding(
+              padding: context.paddingLow,
+              child: content,
             ),
           ),
-          if (role == Role.USER)
-            SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-          if (role == Role.USER)
-            CircleAvatar(
-              backgroundColor: context.secondaryColor,
-              child: const Icon(FontAwesomeIcons.person),
-            ),
-        ],
-      ),
+        ),
+        if (role == Role.USER)
+          SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+        if (role == Role.USER)
+          CircleAvatar(
+            backgroundColor: context.secondaryColor,
+            child: const Icon(FontAwesomeIcons.person),
+          ),
+      ],
     );
   }
 }

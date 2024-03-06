@@ -17,14 +17,14 @@ class SettingsSection extends StatelessWidget {
       children: <Widget>[
         Padding(
           padding: EdgeInsetsDirectional.only(
-            top: MediaQuery.of(context).textScaler.scale(24),
-            bottom: MediaQuery.of(context).textScaler.scale(10),
+            top: MediaQuery.of(context).size.height * 0.02,
+            bottom: MediaQuery.of(context).size.height * 0.02,
             start: 24,
             end: 24,
           ),
-          child: DefaultTextStyle(
-            style: TextStyle(color: context.theme.primaryColor),
-            child: Text(title),
+          child: Text(
+            style: TextStyle(color: context.colorScheme.onTertiary),
+            title,
           ),
         ),
         Column(

@@ -14,7 +14,7 @@ class PromptTextField extends StatelessWidget {
       style: TextStyle(
           color: context.themeData.brightness == Brightness.dark
               ? Colors.white
-              : context.themeData.primaryColor),
+              : Colors.black),
       controller: controller,
       decoration: InputDecoration(hintText: 'prompt'.tr()),
       onSubmitted: onSubmitted,

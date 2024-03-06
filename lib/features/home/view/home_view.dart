@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -22,9 +21,6 @@ class _HomeViewState extends BaseState<HomeView> with HomeViewMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('home').tr(),
-      ),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
@@ -32,12 +28,15 @@ class _HomeViewState extends BaseState<HomeView> with HomeViewMixin {
             children: [
               HomeContainer(
                   contentColor: context.colorScheme.onSurface,
-                  backgroundColor: context.theme.colorScheme.secondary,
+                  backgroundColor: context.isDark
+                      ? context.theme.colorScheme.secondary
+                      : Colors.white,
                   icon: FontAwesomeIcons.comment,
                   title: 'one_shot',
                   onTap: viewModel.onOneShotTap),
               SizedBox(height: _divider),
               HomeContainer(
+                  contentColor: context.theme.colorScheme.surfaceVariant,
                   backgroundColor:
                       context.themeData.colorScheme.tertiaryContainer,
                   icon: FontAwesomeIcons.comments,

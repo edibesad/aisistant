@@ -17,16 +17,25 @@ class SettingsTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: context.themeData.colorScheme.primaryContainer,
-      child: ListTile(
-        titleTextStyle: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: MediaQuery.of(context).size.width * 0.05),
-        title: title,
-        onTap: onTap,
-        trailing: trailing,
-        subtitle: subtitle,
+    return Padding(
+      padding: context.paddingLow,
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              width: 4,
+              color: context.themeData.colorScheme.surfaceVariant,
+            )),
+        child: ListTile(
+          titleTextStyle: TextStyle(
+              color: context.themeData.colorScheme.surfaceVariant,
+              fontWeight: FontWeight.bold,
+              fontSize: MediaQuery.of(context).textScaler.scale(18)),
+          title: title,
+          onTap: onTap,
+          trailing: trailing,
+          subtitle: subtitle,
+        ),
       ),
     );
   }
