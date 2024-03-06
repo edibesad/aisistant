@@ -6,14 +6,16 @@ import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../app/models/response_model.dart';
+import '../../constants/app_constants.dart';
 import '../../repository/network_repository.dart';
 
 class DioManager extends NetworkRepository {
-  static Dio? _dio;
+  Dio? _dio;
 
-  static Dio get dio {
+  Dio get dio {
     _dio ??= Dio(
       BaseOptions(
+        baseUrl: AppConstants.API_URL,
         headers: <String, dynamic>{
           'Accept': 'application/json',
           'Content-Type': 'application/json',
@@ -37,13 +39,13 @@ class DioManager extends NetworkRepository {
   }
 
   @override
-  Future<ResponseModel> deleteRequest(
-    String path, {
+  Future<ResponseModel> deleteRequest({
+    String? path,
     Map<String, dynamic>? params,
   }) async {
     try {
       final Response<Map<String, dynamic>> response =
-          await dio.delete(path, queryParameters: params);
+          await dio.delete(path ?? '', queryParameters: params);
 
       if (kDebugMode) {
         log(response.data.toString());
@@ -54,31 +56,19 @@ class DioManager extends NetworkRepository {
         data: response.data,
         message: 'success'.tr(),
       );
-    } on DioException catch (e) {
-      if (e.type == DioExceptionType.connectionTimeout ||
-          e.type == DioExceptionType.connectionError) {
-        Fluttertoast.showToast(msg: 'check_internet_connection'.tr());
-      }
-      return ResponseModel(
-        result: false,
-        message: e.response.toString(),
-      );
     } catch (e) {
-      return ResponseModel(
-        result: false,
-        message: e.toString(),
-      );
+      return _handleError(e);
     }
   }
 
   @override
-  Future<ResponseModel> getRequest(
-    String path, {
+  Future<ResponseModel> getRequest({
+    String? path,
     Map<String, dynamic>? params,
   }) async {
     try {
       final Response<Map<String, dynamic>> response =
-          await dio.get(path, queryParameters: params);
+          await dio.get(path ?? '', queryParameters: params);
 
       if (kDebugMode) {
         log(response.data.toString());
@@ -89,36 +79,20 @@ class DioManager extends NetworkRepository {
         data: response.data,
         message: 'success'.tr(),
       );
-    } on DioException catch (e) {
-      if (e.type == DioExceptionType.connectionTimeout ||
-          e.type == DioExceptionType.connectionError) {
-        Fluttertoast.showToast(msg: 'check_internet_connection'.tr());
-      }
-      if (e.response is Map<String, dynamic>) {
-        return ResponseModel.fromJson(e.response!.data as Map<String, dynamic>);
-      }
-
-      return ResponseModel(
-        result: false,
-        message: e.toString(),
-      );
     } catch (e) {
-      return ResponseModel(
-        result: false,
-        message: e.toString(),
-      );
+      return _handleError(e);
     }
   }
 
   @override
-  Future<ResponseModel> postRequest(
-    String path, {
+  Future<ResponseModel> postRequest({
+    String? path,
     Map<String, dynamic>? params,
     Map<String, dynamic>? data,
   }) async {
     try {
       final Response<Map<String, dynamic>> response =
-          await dio.post(path, queryParameters: params, data: data);
+          await dio.post(path ?? '', queryParameters: params, data: data);
 
       if (kDebugMode) {
         log(response.data.toString());
@@ -129,35 +103,20 @@ class DioManager extends NetworkRepository {
         data: response.data,
         message: 'success'.tr(),
       );
-    } on DioException catch (e) {
-      if (e.type == DioExceptionType.connectionTimeout ||
-          e.type == DioExceptionType.connectionError) {
-        Fluttertoast.showToast(msg: 'check_internet_connection'.tr());
-      }
-      if (e.response is Map<String, dynamic>) {
-        return ResponseModel.fromJson(e.response! as Map<String, dynamic>);
-      }
-      return ResponseModel(
-        result: false,
-        message: e.toString(),
-      );
     } catch (e) {
-      return ResponseModel(
-        result: false,
-        message: e.toString(),
-      );
+      return _handleError(e);
     }
   }
 
   @override
-  Future<ResponseModel> putRequest(
-    String path, {
+  Future<ResponseModel> putRequest({
+    String? path,
     Map<String, dynamic>? params,
     Map<String, dynamic>? data,
   }) async {
     try {
       final Response<Map<String, dynamic>> response =
-          await dio.post(path, queryParameters: params, data: data);
+          await dio.post(path ?? '', queryParameters: params, data: data);
 
       if (kDebugMode) {
         log(response.data.toString());
@@ -169,9 +128,24 @@ class DioManager extends NetworkRepository {
         message: 'success'.tr(),
       );
     } catch (e) {
+      return _handleError(e);
+    }
+  }
+
+  Future<ResponseModel> _handleError(dynamic error) async {
+    if (error is DioException) {
+      if (error.type == DioExceptionType.connectionTimeout ||
+          error.type == DioExceptionType.connectionError) {
+        Fluttertoast.showToast(msg: 'check_internet_connection'.tr());
+      }
       return ResponseModel(
         result: false,
-        message: e.toString(),
+        message: error.response.toString(),
+      );
+    } else {
+      return ResponseModel(
+        result: false,
+        message: error.toString(),
       );
     }
   }

@@ -50,7 +50,10 @@ class _ChatListViewState extends BaseState<ChatListView>
   }
 
   AppBar _buildAppBar(BuildContext context) => AppBar(
-        title: const Text('chat').tr(),
+        title: const Text(
+          'chat',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ).tr(),
         actions: [
           IconButton(
               onPressed: () => viewModel.addButtonOnPressed('title'),

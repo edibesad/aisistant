@@ -4,11 +4,15 @@
     "light": "Light",
     "home": "Home",
     "one_shot": "One Shot",
-    "chat": "Conversational Chat",
+    "chat": "Chat",
     "settings": "Settings",
     "common": "Common Settings",
     "language": "Language",
     "theme": "Theme",
     "system": "System",
-    "prompt": "Prompt"
+    "prompt": "Prompt",
+    "language_changed": "Language changed. Some settings may require a restart to take effect.",
+    "success": "Success",
+    "error": "Error",
+    "busy_message": "I'm busy right now. Please try again later."
 }

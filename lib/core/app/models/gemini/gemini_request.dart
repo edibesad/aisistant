@@ -51,14 +51,14 @@ enum HarmBlockThreshold {
 
 @JsonSerializable()
 class Content {
-  Content({
+  const Content({
     this.parts,
     this.role,
   });
   factory Content.fromJson(Map<String, dynamic> json) =>
       _$ContentFromJson(json);
-  List<Part>? parts;
-  Role? role;
+  final List<Part>? parts;
+  final Role? role;
   Map<String, dynamic> toJson() => _$ContentToJson(this);
 
   String? roleToString() {

@@ -3,11 +3,13 @@ import 'dart:developer';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../../core/app/models/gemini/gemini_request.dart';
 import '../../../core/app/models/gemini/gemini_response.dart';
 import '../../../core/app/models/response_model.dart';
+import '../../../core/app/view_model/app_view_model.dart';
 import '../../../core/base/base_cubit.dart';
 import '../../../core/constants/hidden_constants.dart';
 import 'state/one_shot_state.dart';
@@ -17,12 +19,13 @@ class OneShotViewModel extends BaseCubit<OneShotState> {
 
   TextEditingController promptController = TextEditingController();
 
-  DateTime? lastPromptSubmitted;
-
   ScrollController scrollController = ScrollController();
 
-  final String _url =
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+  DateTime? get lastPromptSubmitted =>
+      context.read<AppViewModel>().lastPromptSubmitted;
+
+  set lastPromptSubmitted(DateTime? value) =>
+      context.read<AppViewModel>().lastPromptSubmitted = value;
 
   void onButtonPressed() {
     if (state.isLoading) {
@@ -35,33 +38,53 @@ class OneShotViewModel extends BaseCubit<OneShotState> {
 
   // Get prompt from API and update state
   Future<void> getPrompt() async {
-    if (!await _checkConditions()) {
+    final Content userMessage = Content(parts: [
+      Part(text: promptController.text),
+    ], role: Role.USER);
+
+    if (!await _checkConditions(userMessage)) {
       return;
     }
-    emit(state.copyWith(isLoading: true));
+
+    emit(state.copyWith(isLoading: true, messages: <Content>[userMessage]));
 
     lastPromptSubmitted = DateTime.now();
+
+    promptController.clear();
 
     final GeminiRequest request = _prepareRequest();
 
     final ResponseModel response = await _prepareResponse(request);
 
-    // Clear prompt text field
-    promptController.clear();
+    final List<Content> messages = [
+      userMessage,
+      Content(
+        parts: <Part>[
+          Part(text: _handleResponse(response)),
+        ],
+        role: Role.MODEL,
+      ),
+    ];
 
-    final String message = await _handleResponse(response);
-
-    emit(state.copyWith(isLoading: false, message: message));
+    emit(state.copyWith(isLoading: false, messages: messages));
   }
 
   // Check if conditions are met to get prompt
-  Future<bool> _checkConditions() async {
+  Future<bool> _checkConditions(Content userMessage) async {
+    if (promptController.text.isEmpty) {
+      return false;
+    }
+
     final ConnectivityResult connectivityResult =
         await Connectivity().checkConnectivity();
 
     if (connectivityResult == ConnectivityResult.none) {
-      emit(state.copyWith(
-          isLoading: false, message: 'check_internet_connection'.tr()));
+      emit(state.copyWith(isLoading: false, messages: <Content>[
+        userMessage,
+        Content(
+            parts: [Part(text: 'no_internet_connection'.tr())],
+            role: Role.MODEL)
+      ]));
       return false;
     }
     if (lastPromptSubmitted != null &&
@@ -92,7 +115,7 @@ class OneShotViewModel extends BaseCubit<OneShotState> {
         contents: <Content>[
           Content(
             parts: <Part>[
-              Part(text: HiddenConstants.CONFIGURATION_PROMPT),
+              const Part(text: HiddenConstants.CONFIGURATION_PROMPT),
               Part(
                 text: promptController.text,
               ),
@@ -108,23 +131,14 @@ class OneShotViewModel extends BaseCubit<OneShotState> {
   // Send request to API
   Future<ResponseModel> _prepareResponse(GeminiRequest request) =>
       networkRepository.postRequest(
-        _url,
         params: <String, dynamic>{
           'key': HiddenConstants.API_KEY,
         },
         data: request.toJson(),
       );
 
-  void onPromptSubmitted(String value) {
-    if (state.isLoading) {
-      return;
-    }
-    FocusManager.instance.primaryFocus?.unfocus();
-    getPrompt();
-  }
-
   // Handle response which coming from API
-  Future<String> _handleResponse(ResponseModel response) async {
+  String _handleResponse(ResponseModel response) {
     String message = 'No data';
 
     if (response.result!) {

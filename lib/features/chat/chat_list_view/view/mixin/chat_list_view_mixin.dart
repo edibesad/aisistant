@@ -13,4 +13,9 @@ mixin ChatListViewMixin on BaseState<ChatListView> {
     _viewModel.context = context;
     _viewModel.fetchChats();
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 }

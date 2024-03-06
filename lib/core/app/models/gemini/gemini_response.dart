@@ -70,13 +70,13 @@ class SafetyRating {
 
 @JsonSerializable()
 class Part {
-  Part({
+  const Part({
     this.text,
     this.inlineData,
   });
   factory Part.fromJson(Map<String, dynamic> json) => _$PartFromJson(json);
-  String? text;
-  InlineData? inlineData;
+  final String? text;
+  final InlineData? inlineData;
   Map<String, dynamic> toJson() => _$PartToJson(this);
 }
 

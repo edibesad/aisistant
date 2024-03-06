@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../../extension/context_extension.dart';
+
 class PromptTextField extends StatelessWidget {
   const PromptTextField({super.key, this.controller, this.onSubmitted});
   final TextEditingController? controller;
@@ -9,12 +11,14 @@ class PromptTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      style: TextStyle(
+          color: context.themeData.brightness == Brightness.dark
+              ? Colors.white
+              : Colors.black),
       controller: controller,
-      decoration: InputDecoration(
-        border: const OutlineInputBorder(),
-        labelText: 'prompt'.tr(),
-      ),
+      decoration: InputDecoration(hintText: 'prompt'.tr()),
       onSubmitted: onSubmitted,
+      textCapitalization: TextCapitalization.sentences,
     );
   }
 }
