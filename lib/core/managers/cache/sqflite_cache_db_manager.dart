@@ -120,18 +120,31 @@ class SQFLiteCacheDBManager extends CacheDBService {
     }
   }
 
-  Future<FutureOr<void>> _onCreate(Database db, int version) async {
+  @override
+  Future<int> renameChat(int id, String title) async {
     try {
-      await db.execute(
-          'CREATE TABLE chat_table (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL)');
-      await db.execute(
-          'CREATE TABLE message_table (id INTEGER PRIMARY KEY AUTOINCREMENT, chat_id INTEGER NOT NULL, role TEXT NOT NULL, FOREIGN KEY (chat_id) REFERENCES chat_table(id) ON DELETE CASCADE)');
-      await db.execute(
-          'CREATE TABLE message_part_table (id INTEGER PRIMARY KEY AUTOINCREMENT, message TEXT NOT NULL, message_id INTEGER NOT NULL, FOREIGN KEY (message_id) REFERENCES message_table(id) ON DELETE CASCADE)');
+      return await _database.rawUpdate(
+          'UPDATE chat_table SET title = ? WHERE id = ?', [title, id]);
     } catch (e) {
       if (kDebugMode) {
         log(e.toString());
       }
+      return 0;
+    }
+  }
+}
+
+Future<FutureOr<void>> _onCreate(Database db, int version) async {
+  try {
+    await db.execute(
+        'CREATE TABLE chat_table (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL)');
+    await db.execute(
+        'CREATE TABLE message_table (id INTEGER PRIMARY KEY AUTOINCREMENT, chat_id INTEGER NOT NULL, role TEXT NOT NULL, FOREIGN KEY (chat_id) REFERENCES chat_table(id) ON DELETE CASCADE)');
+    await db.execute(
+        'CREATE TABLE message_part_table (id INTEGER PRIMARY KEY AUTOINCREMENT, message TEXT NOT NULL, message_id INTEGER NOT NULL, FOREIGN KEY (message_id) REFERENCES message_table(id) ON DELETE CASCADE)');
+  } catch (e) {
+    if (kDebugMode) {
+      log(e.toString());
     }
   }
 }

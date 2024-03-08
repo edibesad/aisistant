@@ -11,5 +11,17 @@
     "theme": "Tema",
     "system": "Sistem",
     "prompt": "Mesaj",
-    "language_changed": "Dil değiştirildi. Bazı ayarların uygulanması için yeniden başlatmanız gerekebilir."
+    "language_changed": "Dil değiştirildi. Bazı ayarların uygulanması için yeniden başlatmanız gerekebilir.",
+    "wait_30_seconds" : "Lütfen 30 saniye bekleyin.",
+    "wait_15_seconds" : "Lütfen 15 saniye bekleyin.",
+    "error": "Hata",
+    "busy_message": "Şu anda meşgulüm. Lütfen daha sonra tekrar deneyin.",
+    "untitled" : "Başlıksız",
+    "rename" : "Yeniden Adlandır",
+    "Rename": "Yeniden Adlandır",
+    "cancel": "İptal",
+    "rename_chat": "Sohbeti Yeniden Adlandır",
+    "delete": "Sil",
+    "check_internet_connection": "İnternet bağlantınızı kontrol edin."
+
 }

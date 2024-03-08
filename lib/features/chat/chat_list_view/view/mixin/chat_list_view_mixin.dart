@@ -12,6 +12,7 @@ mixin ChatListViewMixin on BaseState<ChatListView> {
     _viewModel = ChatListViewModel();
     _viewModel.context = context;
     _viewModel.fetchChats();
+    analyticService.logScreenView('chat_list_view');
   }
 
   @override

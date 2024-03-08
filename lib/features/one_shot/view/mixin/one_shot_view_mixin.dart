@@ -18,6 +18,7 @@ mixin OneShotViewMixin on BaseState<OneShotView> {
     super.initState();
     _viewModel = OneShotViewModel();
     _viewModel.context = context;
+    analyticService.logScreenView('one_shot_view');
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       viewModel.emit(viewModel.state.copyWith(messages: [

@@ -1,4 +1,6 @@
 import '../../../init/navigation/app_navigation.dart';
+import '../../../services/ai_service.dart';
+import '../../../services/analytic_service.dart';
 import '../../../services/cache_db_service.dart';
 import '../../../services/cache_service.dart';
 import '../../../services/network_service.dart';
@@ -11,6 +13,11 @@ class AppStateItems {
 
   static AppCache appCache = AppCache(settings: CacheSettings());
 
+  static AppRouter get appRouter => AppStateContainer.read<AppRouter>();
+
+  static AppViewModel get appViewModel =>
+      AppStateContainer.read<AppViewModel>();
+
   static NetworkService get networkService =>
       AppStateContainer.read<NetworkService>();
 
@@ -20,8 +27,8 @@ class AppStateItems {
   static CacheDBService get cacheDBService =>
       AppStateContainer.read<CacheDBService>();
 
-  static AppRouter get appRouter => AppStateContainer.read<AppRouter>();
+  static AIService get aiService => AppStateContainer.read<AIService>();
 
-  static AppViewModel get appViewModel =>
-      AppStateContainer.read<AppViewModel>();
+  static AnalyticService get analyticService =>
+      AppStateContainer.read<AnalyticService>();
 }

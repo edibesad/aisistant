@@ -13,6 +13,7 @@ mixin ChatViewMixin on BaseState<ChatView> {
     _viewModel.context = context;
     _viewModel.chat = widget.chat;
     _viewModel.fetchMessages();
+    analyticService.logScreenView('chat_view');
   }
 
   @override
