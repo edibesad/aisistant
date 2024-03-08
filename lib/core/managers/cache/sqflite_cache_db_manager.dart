@@ -7,9 +7,9 @@ import 'package:sqflite/sqflite.dart';
 import '../../app/models/chat.dart';
 import '../../app/models/gemini/gemini_request.dart';
 import '../../app/models/gemini/gemini_response.dart';
-import '../../repository/cache_db_repository.dart';
+import '../../services/cache_db_service.dart';
 
-class SQFLiteCacheDBManager extends CacheDBRepository {
+class SQFLiteCacheDBManager extends CacheDBService {
   factory SQFLiteCacheDBManager() {
     _instance ??= SQFLiteCacheDBManager._init();
     return _instance!;

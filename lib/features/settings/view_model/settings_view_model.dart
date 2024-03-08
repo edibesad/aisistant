@@ -10,7 +10,7 @@ import '../../../core/app/view_model/app_view_model.dart';
 import '../../../core/base/base_cubit.dart';
 import '../../../core/constants/enums/locales.dart';
 import '../../../core/init/navigation/app_navigation.dart';
-import '../../../core/repository/cache_repository.dart';
+import '../../../core/services/cache_service.dart';
 import 'state/settings_state.dart';
 
 class SettingsViewModel extends BaseCubit<SettingsState> {
@@ -50,17 +50,17 @@ class SettingsViewModel extends BaseCubit<SettingsState> {
         log(themeMode);
         context.read<AppViewModel>().changeThemeMode(ThemeMode.light);
         AppStateItems.appCache.settings!.themeMode = ThemeMode.light;
-        AppStateContainer.read<CacheRepository>().put('theme_mode', 'light');
+        AppStateContainer.read<CacheService>().put('theme_mode', 'light');
       case 'dark':
         log(themeMode);
         context.read<AppViewModel>().changeThemeMode(ThemeMode.dark);
         AppStateItems.appCache.settings!.themeMode = ThemeMode.dark;
-        AppStateContainer.read<CacheRepository>().put('theme_mode', 'dark');
+        AppStateContainer.read<CacheService>().put('theme_mode', 'dark');
       default:
         log(themeMode);
         context.read<AppViewModel>().changeThemeMode(ThemeMode.system);
         AppStateItems.appCache.settings!.themeMode = ThemeMode.system;
-        AppStateContainer.read<CacheRepository>().put('theme_mode', 'system');
+        AppStateContainer.read<CacheService>().put('theme_mode', 'system');
         break;
     }
   }

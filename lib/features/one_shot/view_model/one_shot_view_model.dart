@@ -130,7 +130,7 @@ class OneShotViewModel extends BaseCubit<OneShotState> {
 
   // Send request to API
   Future<ResponseModel> _prepareResponse(GeminiRequest request) =>
-      networkRepository.postRequest(
+      networkService.postRequest(
         params: <String, dynamic>{
           'key': HiddenConstants.API_KEY,
         },

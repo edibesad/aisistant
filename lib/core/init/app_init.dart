@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import '../../firebase_options.dart';
 import '../app/state/container/index.dart';
 import '../app/view_model/app_view_model.dart';
-import '../repository/cache_repository.dart';
+import '../services/cache_service.dart';
 
 final class AppInit {
   factory AppInit() => _instance ??= AppInit._init();
@@ -40,7 +40,7 @@ final class AppInit {
 
   Future<void> _readCache() async {
     final Object? themeMode =
-        await AppStateContainer.read<CacheRepository>().get('theme_mode');
+        await AppStateContainer.read<CacheService>().get('theme_mode');
     log(themeMode.toString());
     switch (themeMode) {
       case 'light':

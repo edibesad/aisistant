@@ -19,14 +19,14 @@ class ChatListViewModel extends BaseCubit<ChatListState> {
   void fetchChats() {
     changeState(isLoading: true);
 
-    cacheDbRepository.getChats().then((value) {
+    cacheDbService.getChats().then((value) {
       changeState(isLoading: false, chats: value);
       log(value.toString());
     });
   }
 
   void deleteChat(int id) {
-    cacheDbRepository.deleteChat(id);
+    cacheDbService.deleteChat(id);
     final List<Chat> chats = List.of(state.chats);
     chats.removeWhere((element) => element.id == id);
     changeState(chats: chats);

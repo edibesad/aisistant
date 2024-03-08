@@ -49,7 +49,7 @@ class ChatViewModel extends BaseCubit<ChatState> {
       _changeState(isLoading: true);
 
       final List<Content> messages =
-          await cacheDbRepository.getMesagesByChatId(chat!.id);
+          await cacheDbService.getMesagesByChatId(chat!.id);
 
       _changeState(messages: messages, isLoading: false);
     }
@@ -98,8 +98,8 @@ class ChatViewModel extends BaseCubit<ChatState> {
 
       scrollController.jumpTo(scrollController.position.maxScrollExtent);
 
-      cacheDbRepository.insertMessage(message, chat!.id);
-      cacheDbRepository.insertMessage(responseMessage, chat!.id);
+      cacheDbService.insertMessage(message, chat!.id);
+      cacheDbService.insertMessage(responseMessage, chat!.id);
     } catch (e) {
       _changeState(isMessageWaiting: false);
       messages.add(
@@ -175,7 +175,7 @@ class ChatViewModel extends BaseCubit<ChatState> {
       );
 
   Future<void> createChat(String title) async {
-    final int id = await cacheDbRepository.insertChat(title);
+    final int id = await cacheDbService.insertChat(title);
     chat = Chat(id: id, title: title);
   }
 
@@ -186,7 +186,7 @@ class ChatViewModel extends BaseCubit<ChatState> {
   }
 
   Future<ResponseModel> _prepareResponse(GeminiRequest request) =>
-      networkRepository.postRequest(
+      networkService.postRequest(
         params: <String, dynamic>{
           'key': HiddenConstants.API_KEY,
         },

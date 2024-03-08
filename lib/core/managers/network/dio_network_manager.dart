@@ -7,9 +7,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../app/models/response_model.dart';
 import '../../constants/app_constants.dart';
-import '../../repository/network_repository.dart';
+import '../../services/network_service.dart';
 
-class DioManager extends NetworkRepository {
+class DioManager extends NetworkService {
   Dio? _dio;
 
   Dio get dio {

@@ -1,7 +1,7 @@
 import '../app/models/chat.dart';
 import '../app/models/gemini/gemini_request.dart';
 
-abstract class CacheDBRepository {
+abstract class CacheDBService {
   Future<List<Chat>> getChats();
   Future<List<Content>> getMesagesByChatId(int chatId);
   Future<bool> deleteChat(int chatId);

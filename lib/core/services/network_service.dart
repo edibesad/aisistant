@@ -1,6 +1,6 @@
 import '../app/models/response_model.dart';
 
-abstract class NetworkRepository {
+abstract class NetworkService {
   Future<ResponseModel> getRequest({String path, Map<String, dynamic>? params});
   Future<ResponseModel> postRequest({
     String? path,

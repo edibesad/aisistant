@@ -1,7 +1,7 @@
 import '../../../init/navigation/app_navigation.dart';
-import '../../../repository/cache_db_repository.dart';
-import '../../../repository/cache_repository.dart';
-import '../../../repository/network_repository.dart';
+import '../../../services/cache_db_service.dart';
+import '../../../services/cache_service.dart';
+import '../../../services/network_service.dart';
 import '../../models/app_cache.dart';
 import '../../view_model/app_view_model.dart';
 import 'index.dart';
@@ -11,14 +11,14 @@ class AppStateItems {
 
   static AppCache appCache = AppCache(settings: CacheSettings());
 
-  static NetworkRepository get networkRepository =>
-      AppStateContainer.read<NetworkRepository>();
+  static NetworkService get networkService =>
+      AppStateContainer.read<NetworkService>();
 
-  static CacheRepository get cacheRepository =>
-      AppStateContainer.read<CacheRepository>();
+  static CacheService get cacheService =>
+      AppStateContainer.read<CacheService>();
 
-  static CacheDBRepository get cacheDBRepository =>
-      AppStateContainer.read<CacheDBRepository>();
+  static CacheDBService get cacheDBService =>
+      AppStateContainer.read<CacheDBService>();
 
   static AppRouter get appRouter => AppStateContainer.read<AppRouter>();
 

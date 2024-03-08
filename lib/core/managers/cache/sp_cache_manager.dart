@@ -1,8 +1,8 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../repository/cache_repository.dart';
+import '../../services/cache_service.dart';
 
-class SPCacheManager extends CacheRepository {
+class SPCacheManager extends CacheService {
   factory SPCacheManager() {
     _instance ??= SPCacheManager._init();
     return _instance!;
