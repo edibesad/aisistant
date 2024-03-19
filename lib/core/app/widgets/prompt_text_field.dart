@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import '../../extension/context_extension.dart';
 
 class PromptTextField extends StatelessWidget {
-  const PromptTextField({super.key, this.controller, this.onSubmitted});
+  const PromptTextField(
+      {super.key, this.controller, this.onSubmitted, this.hintText = 'prompt'});
   final TextEditingController? controller;
   final void Function(String)? onSubmitted;
+  final String hintText;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,7 @@ class PromptTextField extends StatelessWidget {
               ? Colors.white
               : Colors.black),
       controller: controller,
-      decoration: InputDecoration(hintText: 'prompt'.tr()),
+      decoration: InputDecoration(hintText: hintText.tr()),
       onSubmitted: onSubmitted,
       textCapitalization: TextCapitalization.sentences,
     );

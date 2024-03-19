@@ -24,6 +24,7 @@ class _ChatViewState extends BaseState<ChatView> with ChatViewMixin {
     return ChatBlocProvider<ChatViewModel, ChatState>(
         loadingSelectorCallback: (state) => state.isMessageWaiting,
         create: (context) => viewModel,
+        title: widget.chat != null ? Text(widget.chat!.title) : null,
         selectorCallBack: (state) => state.messages,
         scrollController: viewModel.scrollController,
         onSubmitted: viewModel.onSubmitted,

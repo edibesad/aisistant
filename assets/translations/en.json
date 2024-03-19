@@ -14,5 +14,12 @@
     "language_changed": "Language changed. Some settings may require a restart to take effect.",
     "success": "Success",
     "error": "Error",
-    "busy_message": "I'm busy right now. Please try again later."
+    "busy_message": "I'm busy right now. Please try again later.",
+    "wait_15_seconds": "Please wait 15 seconds before trying again.",
+    "untitled": "Untitled", 
+    "rename" : "Rename",
+    "cancel": "Cancel",
+    "rename_chat": "Rename Chat",
+    "delete": "Delete",
+    "check_internet_connection": "Please check your internet connection."
 }

@@ -1,6 +1,9 @@
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
+
 import '../../../../core/app/models/chat.dart';
+import '../../../../core/app/widgets/chat_rename_dialog.dart';
 import '../../../../core/base/base_cubit.dart';
 import '../../../../core/init/navigation/app_navigation.dart';
 import 'state/chat_list_state.dart';
@@ -19,14 +22,14 @@ class ChatListViewModel extends BaseCubit<ChatListState> {
   void fetchChats() {
     changeState(isLoading: true);
 
-    cacheDbRepository.getChats().then((value) {
+    cacheDbService.getChats().then((value) {
       changeState(isLoading: false, chats: value);
       log(value.toString());
     });
   }
 
   void deleteChat(int id) {
-    cacheDbRepository.deleteChat(id);
+    cacheDbService.deleteChat(id);
     final List<Chat> chats = List.of(state.chats);
     chats.removeWhere((element) => element.id == id);
     changeState(chats: chats);
@@ -36,5 +39,15 @@ class ChatListViewModel extends BaseCubit<ChatListState> {
     appRouter.push(ChatRoute(chat: chat)).then((value) {
       fetchChats();
     });
+  }
+
+  Future<void> renameChat(Chat chat) async {
+    final bool? result = await showGeneralDialog<bool>(
+        context: context,
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ChatRenameDialog(chat: chat));
+    if (result != null && result) {
+      fetchChats();
+    }
   }
 }

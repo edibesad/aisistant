@@ -1,4 +1,4 @@
-abstract class CacheRepository {
+abstract class CacheService {
   Future<Object?> get(String key);
   Future<bool> put(String key, dynamic value);
   Future<bool> delete(String key);

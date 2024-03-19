@@ -19,6 +19,8 @@ mixin SettingsViewMixin on BaseState<SettingsView> {
 
     viewModel.context = context;
 
+    analyticService.logScreenView('settings_view');
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _viewModel.changeLanguageText(
         Locales.values

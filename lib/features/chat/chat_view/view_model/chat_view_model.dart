@@ -1,8 +1,5 @@
-import 'dart:developer';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -11,9 +8,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import '../../../../core/app/models/chat.dart';
 import '../../../../core/app/models/gemini/gemini_request.dart';
 import '../../../../core/app/models/gemini/gemini_response.dart';
-import '../../../../core/app/models/response_model.dart';
 import '../../../../core/base/base_cubit.dart';
-import '../../../../core/constants/hidden_constants.dart';
 import 'state/chat_state.dart';
 
 class ChatViewModel extends BaseCubit<ChatState> {
@@ -24,8 +19,6 @@ class ChatViewModel extends BaseCubit<ChatState> {
   TextEditingController textEditingController = TextEditingController();
 
   Chat? chat;
-
-  DateTime? lastPromptSubmitted;
 
   void _changeState(
       {List<Content>? messages, bool? isLoading, bool? isMessageWaiting}) {
@@ -40,7 +33,6 @@ class ChatViewModel extends BaseCubit<ChatState> {
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
-      log(scrollController.position.maxScrollExtent.toString());
     });
   }
 
@@ -49,22 +41,24 @@ class ChatViewModel extends BaseCubit<ChatState> {
       _changeState(isLoading: true);
 
       final List<Content> messages =
-          await cacheDbRepository.getMesagesByChatId(chat!.id);
+          await cacheDbService.getMesagesByChatId(chat!.id);
 
       _changeState(messages: messages, isLoading: false);
     }
   }
 
   Future<void> onButtonPressed() async {
-    log(scrollController.position.maxScrollExtent.toString());
+    analyticService.logEvent('chat_message_submitted');
+
     if (!await _checkConditions()) {
       return;
     }
 
     if (chat == null) {
       await createChat('untitled'.tr());
-      FirebaseAnalytics.instance.logEvent(name: 'create_chat');
+      analyticService.logEvent('create_chat');
     }
+    appViewModel.lastPromptSubmitted = DateTime.now();
 
     final Content message = Content(
       role: Role.USER,
@@ -73,33 +67,34 @@ class ChatViewModel extends BaseCubit<ChatState> {
 
     final List<Content> messages = List.from(state.messages);
 
-    FirebaseAnalytics.instance.logEvent(name: 'chat_message_sent');
+    analyticService.logEvent('chat_message_sent');
     messages.add(message);
 
     _changeState(messages: messages);
 
     textEditingController.clear();
     try {
-      final GeminiRequest request = _prepareRequest();
-
       _changeState(isMessageWaiting: true);
 
       scrollController.jumpTo(scrollController.position.maxScrollExtent);
 
-      final ResponseModel response = await _prepareResponse(request);
-      final Content responseMessage = Content(
-        role: Role.MODEL,
-        parts: [Part(text: _handleResponse(response))],
-      );
+      final Content responseMessage = await aiService.getResponse(messages);
 
+      if (responseMessage.parts![0].text == 'null') {
+        _changeState(
+            isMessageWaiting: false,
+            messages: List.from(messages..removeLast()));
+        return;
+      }
       _changeState(
           isMessageWaiting: false,
           messages: List.from(messages)..add(responseMessage));
 
       scrollController.jumpTo(scrollController.position.maxScrollExtent);
 
-      cacheDbRepository.insertMessage(message, chat!.id);
-      cacheDbRepository.insertMessage(responseMessage, chat!.id);
+      cacheDbService.insertMessage(message, chat!.id);
+      cacheDbService.insertMessage(responseMessage, chat!.id);
+      analyticService.logEvent('chat_message_received');
     } catch (e) {
       _changeState(isMessageWaiting: false);
       messages.add(
@@ -119,9 +114,14 @@ class ChatViewModel extends BaseCubit<ChatState> {
       return false;
     }
 
-    if (lastPromptSubmitted != null &&
-        DateTime.now().difference(lastPromptSubmitted!).inSeconds < 30) {
-      Fluttertoast.showToast(msg: 'wait_30_seconds'.tr());
+    if (state.isLoading) {
+      return false;
+    }
+
+    if (appViewModel.lastPromptSubmitted != null &&
+        DateTime.now().difference(appViewModel.lastPromptSubmitted!).inSeconds <
+            15) {
+      Fluttertoast.showToast(msg: 'wait_15_seconds'.tr());
       return false;
     }
 
@@ -135,47 +135,12 @@ class ChatViewModel extends BaseCubit<ChatState> {
 
       return false;
     }
-    if (lastPromptSubmitted != null &&
-        DateTime.now().difference(lastPromptSubmitted!).inSeconds < 30) {
-      Fluttertoast.showToast(msg: 'wait_30_seconds'.tr());
-      return false;
-    }
 
     return true;
   }
 
-  // Prepare request to send to API
-  GeminiRequest _prepareRequest() => GeminiRequest(
-        safetySettings: <SafetySetting>[
-          SafetySetting(
-              category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-              threshold: HarmBlockThreshold.BLOCK_NONE),
-          SafetySetting(
-              category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-              threshold: HarmBlockThreshold.BLOCK_NONE),
-          SafetySetting(
-              category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-              threshold: HarmBlockThreshold.BLOCK_NONE),
-          SafetySetting(
-              category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-              threshold: HarmBlockThreshold.BLOCK_NONE),
-        ],
-        contents: [
-          const Content(parts: [
-            Part(text: HiddenConstants.CONFIGURATION_PROMPT),
-          ], role: Role.USER),
-          const Content(parts: [
-            Part(text: 'Understood!'),
-          ], role: Role.MODEL),
-          ...state.messages
-        ],
-        generationConfig: GenerationConfig(
-          candidateCount: 1,
-        ),
-      );
-
   Future<void> createChat(String title) async {
-    final int id = await cacheDbRepository.insertChat(title);
+    final int id = await cacheDbService.insertChat(title);
     chat = Chat(id: id, title: title);
   }
 
@@ -183,57 +148,5 @@ class ChatViewModel extends BaseCubit<ChatState> {
     if (value.isNotEmpty && !state.isMessageWaiting) {
       onButtonPressed();
     }
-  }
-
-  Future<ResponseModel> _prepareResponse(GeminiRequest request) =>
-      networkRepository.postRequest(
-        params: <String, dynamic>{
-          'key': HiddenConstants.API_KEY,
-        },
-        data: request.toJson(),
-      );
-
-  // Handle response which is coming from API
-  String _handleResponse(ResponseModel response) {
-    String message = 'No data';
-
-    if (response.result!) {
-      if (response.data is Map<String, dynamic>) {
-        final GeminiResponse geminiResponse =
-            GeminiResponse.fromJson(response.data as Map<String, dynamic>);
-
-        if (geminiResponse.candidates != null &&
-            geminiResponse.candidates!.isNotEmpty) {
-          if (geminiResponse.candidates![0].finishReason ==
-              FinishReason.FINISH_REASON_MAX_TOKENS) {
-            message = 'busy_message'.tr();
-          } else if (geminiResponse.candidates![0].finishReason ==
-              FinishReason.FINISH_REASON_SAFETY) {
-            message = 'safety_message'.tr();
-          } else if (geminiResponse.candidates![0].finishReason ==
-              FinishReason.FINISH_REASON_UNSPECIFIED) {
-            message = 'unspecified_message'.tr();
-          } else if (geminiResponse.candidates![0].finishReason ==
-              FinishReason.FINISH_REASON_RECITATION) {
-            message = 'recitation_message'.tr();
-          } else if (geminiResponse.candidates![0].finishReason ==
-              FinishReason.FINISH_REASON_OTHER) {
-            message = 'other_message'.tr();
-          }
-        }
-
-        if (geminiResponse.candidates != null &&
-            geminiResponse.candidates!.isNotEmpty &&
-            geminiResponse.candidates![0].content != null &&
-            geminiResponse.candidates![0].content!.parts != null &&
-            geminiResponse.candidates![0].content!.parts!.isNotEmpty &&
-            geminiResponse.candidates![0].content!.parts![0].text != null) {
-          message = geminiResponse.candidates![0].content!.parts![0].text!;
-        }
-      }
-    } else {
-      message = response.message ?? 'Error';
-    }
-    return message;
   }
 }
