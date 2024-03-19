@@ -1,7 +1,7 @@
 name: aisistant
 description: "AI based assistant for everyone."
 publish_to: "none"
-version: 0.1.1
+version: 1.0.0
 
 environment:
   sdk: ">=3.2.3 <4.0.0"
