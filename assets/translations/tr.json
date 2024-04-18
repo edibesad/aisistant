@@ -18,10 +18,14 @@
     "busy_message": "Şu anda meşgulüm. Lütfen daha sonra tekrar deneyin.",
     "untitled" : "Başlıksız",
     "rename" : "Yeniden Adlandır",
-    "Rename": "Yeniden Adlandır",
     "cancel": "İptal",
     "rename_chat": "Sohbeti Yeniden Adlandır",
     "delete": "Sil",
-    "check_internet_connection": "İnternet bağlantınızı kontrol edin."
-
+    "check_internet_connection": "İnternet bağlantınızı kontrol edin.",
+    "success": "Başarılı",
+    "recitation": "Mesaj okuma hatası.",
+    "other_message": "Bilinmeyen bir hata oluştu.",
+    "no_internet_connection" : "İnternet bağlantısı yok.",
+    "safety_message": "Mesajınız güvenlik kurallarına uymuyor.",
+    "unspecified_message": "Belirtilmemiş bir hata oluştu."
 }

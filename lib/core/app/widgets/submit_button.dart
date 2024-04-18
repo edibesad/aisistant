@@ -13,13 +13,12 @@ class SubmitButton extends StatelessWidget {
     return IconButton.filled(
       color: context.theme.colorScheme.onTertiary,
       onPressed: onPressed,
-      icon: SizedBox(
-          width: context.mediaQuery.size.width * .1,
-          height: context.mediaQuery.size.width * .1,
-          child: Icon(
-            FontAwesomeIcons.solidPaperPlane,
-            size: context.mediaQuery.size.width * .07,
-          )),
+      icon: LayoutBuilder(
+        builder: (context, constraints) => Icon(
+          FontAwesomeIcons.solidPaperPlane,
+          size: constraints.maxWidth * .6,
+        ),
+      ),
     );
   }
 }

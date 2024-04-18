@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../base/base_cubit.dart';
@@ -34,9 +35,11 @@ class ChatBlocProvider<T extends BaseCubit<U>, U extends Equatable>
     return BlocProvider<T>(
       create: create,
       child: Scaffold(
-        appBar: AppBar(
-          title: title,
-        ),
+        appBar: context.mediaQuery.orientation == Orientation.portrait
+            ? AppBar(
+                title: title,
+              )
+            : null,
         body: BlocListener<T, U>(
           listener: (context, state) {},
           child: Padding(
@@ -53,19 +56,31 @@ class ChatBlocProvider<T extends BaseCubit<U>, U extends Equatable>
                         selectorCallback: selectorCallBack,
                         scrollController: scrollController),
                   )),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: context.width * .8,
-                        child: PromptTextField(
-                          onSubmitted: onSubmitted,
-                          controller: textEditingController,
-                        ),
-                      ),
-                      SubmitButton(onPressed: onButtonPressed)
-                    ],
-                  )
+                  LayoutBuilder(
+                      builder: (context, constraints) => Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              SizedBox(
+                                width: constraints.maxWidth * .8,
+                                child: PromptTextField(
+                                  onSubmitted: onSubmitted,
+                                  controller: textEditingController,
+                                ),
+                              ),
+                              SizedBox(
+                                  width: MediaQuery.of(context).orientation ==
+                                          Orientation.portrait
+                                      ? constraints.maxWidth * .16
+                                      : constraints.maxWidth * .08,
+                                  height: MediaQuery.of(context).orientation ==
+                                          Orientation.portrait
+                                      ? constraints.maxWidth * .16
+                                      : constraints.maxWidth * .08,
+                                  child: SubmitButton(
+                                    onPressed: onButtonPressed,
+                                  ))
+                            ],
+                          ))
                 ],
               ),
             ),

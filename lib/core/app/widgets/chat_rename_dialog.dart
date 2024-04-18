@@ -46,7 +46,7 @@ class ChatRenameDialog extends StatelessWidget {
                       .renameChat(chat.id, titleController.text);
                   AppStateItems.appRouter.pop(true);
                 },
-                child: const Text('Rename').tr(),
+                child: const Text('rename_chat').tr(),
               ),
             ],
           ),

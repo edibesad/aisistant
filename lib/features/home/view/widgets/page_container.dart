@@ -22,8 +22,12 @@ class HomeContainer extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        height: MediaQuery.of(context).size.height * .15,
-        width: MediaQuery.of(context).size.width * .9,
+        height: MediaQuery.of(context).orientation == Orientation.portrait
+            ? MediaQuery.of(context).size.height * .15
+            : MediaQuery.of(context).size.height * .3,
+        width: MediaQuery.of(context).orientation == Orientation.portrait
+            ? MediaQuery.of(context).size.width * .9
+            : MediaQuery.of(context).size.width * .4,
         decoration: BoxDecoration(
           boxShadow: const [
             BoxShadow(
@@ -40,27 +44,28 @@ class HomeContainer extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.only(left: 16),
-          child: Row(
-            children: [
-              Icon(
-                icon,
-                size: MediaQuery.of(context).size.width * .2,
-                color: contentColor ?? Colors.white,
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .07,
-              ),
-              Expanded(
-                child: Text(title,
-                        softWrap: true,
-                        style: TextStyle(
-                            color: contentColor ?? Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: fontSize ??
-                                MediaQuery.of(context).size.width * .13))
-                    .tr(),
-              ),
-            ],
+          child: LayoutBuilder(
+            builder: (context, constraints) => Row(
+              children: [
+                Icon(
+                  icon,
+                  size: constraints.maxWidth * .2,
+                  color: contentColor ?? Colors.white,
+                ),
+                SizedBox(
+                  width: constraints.maxWidth * .07,
+                ),
+                Expanded(
+                  child: Text(title,
+                          softWrap: true,
+                          style: TextStyle(
+                              color: contentColor ?? Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: fontSize ?? constraints.maxWidth * .2))
+                      .tr(),
+                ),
+              ],
+            ),
           ),
         ),
       ),

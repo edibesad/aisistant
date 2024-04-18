@@ -32,6 +32,7 @@ class _HomeViewState extends BaseState<HomeView> with HomeViewMixin {
                       ? context.theme.colorScheme.secondary
                       : Colors.white,
                   icon: FontAwesomeIcons.comment,
+                  fontSize: 48,
                   title: 'one_shot',
                   onTap: viewModel.onOneShotTap),
               SizedBox(height: _divider),

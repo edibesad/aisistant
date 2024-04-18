@@ -16,10 +16,17 @@
     "error": "Error",
     "busy_message": "I'm busy right now. Please try again later.",
     "wait_15_seconds": "Please wait 15 seconds before trying again.",
+    "wait_30_seconds": "Please wait 30 seconds before trying again.",
     "untitled": "Untitled", 
     "rename" : "Rename",
     "cancel": "Cancel",
     "rename_chat": "Rename Chat",
     "delete": "Delete",
-    "check_internet_connection": "Please check your internet connection."
+    "check_internet_connection": "Please check your internet connection.",
+    "safety_message": "Your message has violated our safety rules.",
+    "unspecified_message": "An unspecified error occurred.",
+    "recitation": "Problem with recitation", 
+    "other_message": "Something went wrong",
+    "check_internet_conection":   "Please check your internet connection.",
+    "no_internet_connection": "No internet connection"
 }
